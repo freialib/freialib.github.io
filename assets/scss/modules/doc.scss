@@ -1,0 +1,13 @@
+.doc {
+	width: 570px;
+}
+
+.doc pre {
+	background: #fff;
+	padding: 20px;
+	border: 1px solid $alt1;
+}
+
+.doc p + p {
+	margin-top: 1em;
+}

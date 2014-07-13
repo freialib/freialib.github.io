@@ -1,0 +1,56 @@
+.toc {
+	padding-left: 13px;
+	padding-bottom: 20px;
+}
+
+.toc a {
+	color: $main2;
+	text-decoration: none;
+
+	&:hover, &.d-hover {
+		color: $accent;
+	}
+}
+
+.toc ul {
+	margin-left: 13px;
+}
+
+.toc li {
+	&:before {
+		content: ' - ';
+	}
+}
+
+// ---- Components ------------------------------------------------------------
+
+a.toc-Title {
+	text-decoration: underline;
+	font-size: 18px;
+	font-weight: bold;
+	display: block;
+	margin-bottom: 14px;
+	margin-top: 25px;
+
+	&:hover, &.d-hover {
+		text-decoration: none;
+		color: $main2;
+	}
+}
+
+.toc-Subtitle {
+	color: $alt1;
+	display: block;
+	margin-left: 13px;
+	font-size: 12px;
+	font-style: italic;
+	margin-top: 10px;
+}
+
+.toc-Entry {
+	font-size: 13px;
+
+	&:hover, &.d-hover {
+		text-decoration: underline;
+	}
+}

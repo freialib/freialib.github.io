@@ -1,0 +1,38 @@
+.keyinfo {
+	font-family: sans-serif;
+	padding-left: 20px;
+	margin-bottom: 25px;
+	margin-top: 25px;
+}
+
+.keyinfo a {
+	color: $main2;
+	text-decoration: none;
+
+	&:hover, &.d-hover {
+		color: $accent;
+	}
+}
+
+.keyinfo ul {
+	margin-left: 7px;
+}
+
+.keyinfo ul a {
+	text-decoration: underline;
+	font-size: 14px;
+
+	&:hover, &.d-hover {
+		text-decoration: none;
+	}
+}
+
+// ---- Components ------------------------------------------------------------
+
+.keyinfo-Lead {
+	font-size: 22px;
+}
+
+.keyinfo-Version {
+	color: $alt1;
+}
