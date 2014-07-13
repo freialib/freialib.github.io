@@ -9,7 +9,7 @@
 // ---- Components ------------------------------------------------------------
 
 .window-Body {
-	font-family: serif;
+	font-family: $serifFonts;
 	margin-left: 245px;
 	position: relative;
 	padding-top: 150px;
@@ -19,7 +19,7 @@
 }
 
 .window-Nav {
-	font-family: sans-serif;
+	font-family: $sansSerifFonts;
 	width: 245px;
 	position: fixed;
 	top: 0; bottom: 0; left: 0;

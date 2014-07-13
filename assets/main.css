@@ -1601,7 +1601,7 @@ p {
   min-height: 100%; }
 
 .window-Body {
-  font-family: serif;
+  font-family: "Times New Roman", Times, serif;
   margin-left: 245px;
   position: relative;
   padding-top: 150px;
@@ -1610,7 +1610,7 @@ p {
   min-height: 100%; }
 
 .window-Nav {
-  font-family: sans-serif;
+  font-family: Tahoma, Geneva, sans-serif;
   width: 245px;
   position: fixed;
   top: 0;
@@ -1696,7 +1696,7 @@ a.toc-Title {
     text-decoration: underline; }
 
 .keyinfo {
-  font-family: sans-serif;
+  font-family: Tahoma, Geneva, sans-serif;
   padding-left: 20px;
   margin-bottom: 25px;
   margin-top: 25px; }
@@ -1726,6 +1726,8 @@ a.toc-Title {
   width: 570px; }
 
 .doc pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
   background: #fff;
   padding: 20px;
   border: 1px solid #aaa9ae; }
