@@ -1733,4 +1733,9 @@ a.toc-Title {
 .doc p + p {
   margin-top: 1em; }
 
+.doc hr {
+  background: url("images/doc/delimiter.png") repeat-x 0px 0px;
+  border: 0;
+  height: 1px; }
+
 /*# sourceMappingURL=main.css.map */
