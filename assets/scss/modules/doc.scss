@@ -2,7 +2,7 @@
 	width: 570px;
 }
 
-.doc pre {
+.doc > pre {
 	font-family: $monospaceFonts;
 	font-size: 12px;
 	background: #fff;
@@ -10,11 +10,11 @@
 	border: 1px solid $alt1;
 }
 
-.doc p + p {
+.doc > p + p {
 	margin-top: 1em;
 }
 
-.doc hr {
+.doc > hr {
 	background: $docDelimiterImage repeat-x 0px 0px;
 	border: 0;
 	height: 1px;

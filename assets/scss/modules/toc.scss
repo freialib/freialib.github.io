@@ -3,20 +3,11 @@
 	padding-bottom: 20px;
 }
 
-.toc a {
-	color: $main2;
-	text-decoration: none;
-
-	&:hover, &.d-hover {
-		color: $accent;
-	}
-}
-
-.toc ul {
+.toc > ul {
 	margin-left: 13px;
 }
 
-.toc li {
+.toc > ul > li {
 	&:before {
 		content: ' - ';
 	}
@@ -24,13 +15,14 @@
 
 // ---- Components ------------------------------------------------------------
 
-a.toc-Title {
+.toc-Title {
 	text-decoration: underline;
 	font-size: 18px;
 	font-weight: bold;
 	display: block;
 	margin-bottom: 14px;
 	margin-top: 25px;
+	color: $main2;
 
 	&:hover, &.d-hover {
 		text-decoration: none;
@@ -49,8 +41,11 @@ a.toc-Title {
 
 .toc-Entry {
 	font-size: 13px;
+	color: $main2;
+	text-decoration: none;
 
 	&:hover, &.d-hover {
+		color: $accent;
 		text-decoration: underline;
 	}
 }

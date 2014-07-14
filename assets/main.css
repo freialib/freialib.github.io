@@ -1623,9 +1623,6 @@ p {
   box-shadow: 3px 0px 7px 0px rgba(50, 50, 50, 0.25);
   height: 100%; }
 
-.window-Nav a:hover, .window-Nav a.d-hover {
-  color: #aa331f; }
-
 .window-Navhead {
   height: 30px;
   font-size: 11px;
@@ -1659,26 +1656,21 @@ p {
   padding-left: 13px;
   padding-bottom: 20px; }
 
-.toc a {
-  color: #090714;
-  text-decoration: none; }
-  .toc a:hover, .toc a.d-hover {
-    color: #aa331f; }
-
-.toc ul {
+.toc > ul {
   margin-left: 13px; }
 
-.toc li:before {
+.toc > ul > li:before {
   content: ' - '; }
 
-a.toc-Title {
+.toc-Title {
   text-decoration: underline;
   font-size: 18px;
   font-weight: bold;
   display: block;
   margin-bottom: 14px;
-  margin-top: 25px; }
-  a.toc-Title:hover, a.toc-Title.d-hover {
+  margin-top: 25px;
+  color: #090714; }
+  .toc-Title:hover, .toc-Title.d-hover {
     text-decoration: none;
     color: #090714; }
 
@@ -1691,8 +1683,11 @@ a.toc-Title {
   margin-top: 10px; }
 
 .toc-Entry {
-  font-size: 13px; }
+  font-size: 13px;
+  color: #090714;
+  text-decoration: none; }
   .toc-Entry:hover, .toc-Entry.d-hover {
+    color: #aa331f;
     text-decoration: underline; }
 
 .keyinfo {
@@ -1707,13 +1702,13 @@ a.toc-Title {
   .keyinfo a:hover, .keyinfo a.d-hover {
     color: #aa331f; }
 
-.keyinfo ul {
+.keyinfo > ul {
   margin-left: 7px; }
 
-.keyinfo ul a {
+.keyinfo > ul a {
   text-decoration: underline;
   font-size: 14px; }
-  .keyinfo ul a:hover, .keyinfo ul a.d-hover {
+  .keyinfo > ul a:hover, .keyinfo > ul a.d-hover {
     text-decoration: none; }
 
 .keyinfo-Lead {
@@ -1725,19 +1720,17 @@ a.toc-Title {
 .doc {
   width: 570px; }
 
-.doc pre {
+.doc > pre {
   font-family: "Courier New", Courier, monospace;
   font-size: 12px;
   background: #fff;
   padding: 20px;
   border: 1px solid #aaa9ae; }
 
-.doc p + p {
+.doc > p + p {
   margin-top: 1em; }
 
-.doc hr {
+.doc > hr {
   background: url("images/doc/delimiter.png") repeat-x 0px 0px;
   border: 0;
   height: 1px; }
-
-/*# sourceMappingURL=main.css.map */
