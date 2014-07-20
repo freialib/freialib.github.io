@@ -118,11 +118,15 @@ structure from scratch to get the most benefit by avoiding any unncesary
 clutter that a generic structure might impose, but if you're in a hurry or need
 a reference point here you go:</p>
 
-<pre><code class="no-highlight">composer create-project freialib/framework YOUR_PROJECT/ "~1.0"</code></pre>
+<pre><code class="vdr / no-highlight">composer create-project --prefer-dist freialib/framework YOUR_PROJECT/ "~1.0"
+cd YOUR_PROJECT/1.0
+git init
+git add -A
+git commit -m "base"</code></pre>
 
 <p>If you don't have the composer command run the following to get it:</p>
 
-<pre><code class="no-highlight">curl -sS https://getcomposer.org/installer | php
+<pre><code class="vdr / no-highlight">curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer</code></pre>
 
 <h2 id="doc-license">License</h2>
@@ -221,14 +225,18 @@ actually require the autoloader to be active for the dependencies to resolve
 
 <p><code>fenrir.SymbolLoader</code> is the class you should be looking when
 trying to initialized the autoloader. The class <code>fenrir.Autoloader</code>
-is intended for testing only. You can not initialize it with out having
-<code>fenrir.SymbolLoader</code> already initialized.</p>
+is intended for use in contexts where the archetype is required. You can not
+initialize it with out having <code>fenrir.SymbolLoader</code> already
+initialized.</p>
 
 <p>Simple autoloader initialization:</p>
 
-<pre><code>&lt;?php
+<pre><code>&lt;?php namespace appname\main;
 
-	$syspath = realpath(__DIR__);
+/**
+ * @return \hlin\archetype\Autoloader
+ */
+function autoloader($syspath) {
 
 	// paths where to search for freia modules (relative to $syspath)
 	$paths = ['system', 'vendor'];
@@ -240,15 +248,18 @@ is intended for testing only. You can not initialize it with out having
 	$autoloader = \freia\SymbolLoader::instance($syspath, $paths);
 
 	// add as main autoloader
-	$registered = $autoloader->register(true);
+	$is_registered = $autoloader->register(true);
 
-</code></pre>
+	// fulfill archetype contract before returning
+	return \freia\Autoloader::wrap($autoloader);
+}</code></pre>
 
 <p>We recomend storing the paths configuration in your
-<code>composer.json</code>. Building on the above example you would just change
-<code>$paths</code> as follows:</p>
+<code>composer.json</code>. Building on the above example you can just change
+<code>$paths</code> as follows to configure modules via your
+<code>composer.json</code> configuration:</p>
 
-<pre><code>&lt;?php
+<pre><code>&lt;?php namespace appname\main;
 
 	// ...
 
@@ -261,25 +272,320 @@ is intended for testing only. You can not initialize it with out having
 
 </code></pre>
 
-<h4>Conventions</h4>
+<h4>Class Name Conventions</h4>
+
+<p>Classes written in freia modules follow the following conventions:</p>
+<ul>
+	<li>given multiple words in a CamelCase classname the last word, and last
+	    word only, is converted to a directory and the classname with out the
+	    last word in it is used as the file name</li>
+	<li>in resolution, if only the first segment of a namespace is provided the
+	    class will resolve to the top class with the segment as the main
+	    namespace or the first subnamespace in cases of foreign namespaces</li>
+	<li>whenever a namespace ends with <code>next\&lt;namespace&gt;</code> the
+	    class will resolve to the first class in the namespace after the
+	    current module in the stack that has the class in the namespace after
+	    <code>next</code></li>
+	<li>we recognize php is case insensitive but calling classes from freia
+	    modules using the wrong case will result in undefined behavior (will
+	    work if it was previously loaded, or on window, fail otherwise due to
+	    file mapping)</li>
+</ul>
+
+<p>As an optional requirement, which we do not impose, we recomend namespaces
+be lowercase letters (using <code>\</code> to seperate words) and not be used
+as an extention of class names (eg. <code>appname.Controllers.Home</code> would
+be incorect under the recomendation). Please keep all the information within
+the class name and use the namespace purely as a "name workspace."</p>
+
+<p>With regard to class names being case sensitive, in part this is a
+restriction inherited from compatibility with composer, but that aside in
+practice we find it's fairly easy and desirable to keep classes case sensitive.
+Code is more consistent and as a bonus file names of classes using camel case
+are readable, as opposed to the being a amalgam of lowercase words which would
+happen if we had made it case insensitive.</p>
+
+<h5>Examples of the first rule</h5>
+<pre><code>class Controller_Home # => Controller_Home.php</code></pre>
+<pre><code>class HomeController # => Controller/Home.php</code></pre>
+<pre><code>class ExampleCommand # => Command/Example.php</code></pre>
+<pre><code>class ExampleTrait # => Trait/Example.php</code></pre>
+<pre><code>interface ExampleSignature # => Signature/Example.php</code></pre>
+<pre><code>class ReallyLongNameDatabase # => Database/ReallyLongName.php</code></pre>
+
+<h5>Examples of resolution</h5>
+<p>We'll assume the following stack of modules and classes. Remember you can
+use the command line helpers to diagnose the class resolution if you need it;
+in practice it's rarely as complex as the example bellow.</p>
+<pre><code class="vdr / no-highlight">module0.module2
+	class Example1
+
+module1.system.legacysupport
+	class Example1
+module1.system.core
+	class Example1
+	class Example2 extends next\module1\Example1
+module1.tools
+	class Example1
+
+module2.system
+	class Example1
+
+module3.system
+	class Example1
+	class Example3 extends \module1\system\core\Example1
+</code></pre>
+<p><small>In the examples bellow <code>A &lt;- B</code> means <code>A</code>
+extends <code>B</code></small></p>
+<pre><code># simple resolution (absolute and dynamic)
+# --------------------------------------------------------------------------
+\module1\system\core\Example1 # => module1.system.core.Example1
+\module1\system\Example1 # => module1.system.legacysupport.Example1
+\module1\tools\Example1 # => module1.tools.Example1
+\module1\Example1 # => module1.systen.core.Example1</code></pre>
+
+<pre><code># overwriting from foreign namespace
+# --------------------------------------------------------------------------
+\module2\system\Example1 # => module2.system.Example1
+\module2\Example1 # => module0.module2.Example1</code></pre>
+
+<pre><code># infinite blind extention via the "next" keyword
+# --------------------------------------------------------------------------
+\module1\Example2 # => module1.system.Example2 &lt;- module1.tools.Example1</code></pre>
+
+<pre><code># explicit inheritance
+# --------------------------------------------------------------------------
+\module3\Example3 # => module3.system.Example3 &lt;- module1.system.core.Example1</code></pre>
 
 <h3 id="doc-freia-initialization">Initialization</h3>
 
-<p></p>
+<p>Settings up the autoloader allows you to use modules, however in freia most
+modules require a context to work with. Things such as logs, file system
+functions, cli functions, web functions, paths are all part of the context
+passed into classes that require them.</p>
+
+<p>Here is a minimalistic initialization block:</p>
+
+<pre><code>&lt;?php namespace appname\main;
+
+use \hlin\archetype\Autoloader;
+
+/**
+ * @return \hlin\archetype\Context
+ */
+function context($syspath, $logspath, Autoloader $autoloader) {
+
+	// php settings
+	date_default_timezone_set('Europe/London');
+
+	// paths
+	$cachepath = realpath("$syspath/cache");
+
+	// paths to obscure in logs
+	$secpaths = ['syspath' => $syspath];
+
+	// logger setup
+	$fs = \fenrir\Filesystem::instance();
+	$logger = \hlin\FileLogger::instance($fs, $logspath, $secpaths);
+
+	// configuration reader
+	$filemap = \freia\Filemap::instance($autoloader);
+	$configs = \freia\Configs::instance($fs, [ $filemap ]);
+
+	// main context
+	$context = \fenrir\Context::instance($fs, $logger, $configs);
+
+	// paths
+	$context->addpath('syspath', $syspath);
+	$context->addpath('logspath', $logspath);
+	$context->addpath('cachepath', $cachepath);
+
+	return $context;
+}</code></pre>
+
+<p>99% of modules will require just the above to function. In some cases
+you may need to add to the above to satisfy the special needs of specialized
+modules; be it extra path constants or just diffrent classes for the
+initialization altogheter.</p>
+
+<p>Here are a few "extra" configuration values as an example:</p>
+
+<pre><code>&lt;?php namespace appname\main;
+
+	// ...
+
+	// versions
+	$pkg = json_decode(file_get_contents("$syspath/composer.json"), true);
+	$mainauthor = $pkg['authors'][0]['name'];
+	$context->addversion($pkg['name'], $pkg['version'], $mainauthor);
+	$context->setmainversion($pkg['name']);
+	$context->addversion('PHP', phpversion(), 'The PHP Group');
+
+	// special handlers
+	$context->filemap_is($filemap);
+	$context->autoloader_is($autoloader);
+
+	// ...
+
+</code></pre>
+
+<h4>Putting it all togheter</h4>
+
+<p>So far we've gone into what code you need for initialization but not really
+how you use it. Let's assume the <code>appname.main.context</code> function
+defined above is in <code>main.context.php</code> and the code illustrated
+in the Autoloader section is in <code>main.autoloader.php</code>. We recomend
+you always use <code>main</code> for the filename of your entry point, and
+place your entry point on the root of the project.</p>
+
+<p>Assuming all files mentioned so far are on the root of your project, here's
+a minimal example of how your entry point might look for a web app:</p>
+
+<h5>main.php</h5>
+<pre><code>&lt;?php namespace appname\main;
+
+/**
+ * ...
+ */
+function main($localconf) {
+
+	$syspath = realpath(__DIR__);
+	$logspath = realpath("$syspath/logs");
+
+	require "$syspath/main.autoloader.php";
+	require "$syspath/main.context.php";
+
+	// init autoloader
+	$autoloader = autoloader($syspath);
+
+	if ($autoloader === null) {
+		error_log("Failed loading autoloader.");
+		return 500;
+	}
+
+	// init main context
+	$context = context($syspath, $logspath, $autoloader);
+
+	// example logic
+	try {
+		$dbconf = $context->confs->read('freia/databases');
+		$mysql = \fenrir\MysqlDatabase::instance($dbconf['appname.mysql']);
+		$http = \fenrir\HttpDispatcher::instance($context);
+
+		require "$syspath/routes/main.php"; # => router function
+		\appname\routes\router($http, $context, $mysql);
+
+		return 0; # success
+	}
+	catch (\Exception $exception) {
+		$context->logger->logexception($exception);
+		return 500;
+	}
+}
+</code></pre>
+<h5>index.php</h5>
+<pre><code>&lt;?php namespace appname\main;
+
+	$wwwpath = realpath(__DIR__);
+	$siteroot = realpath("$wwwpath/..");
+
+	// ignore existing files in PHP build-in server
+	$uri = $_SERVER['REQUEST_URI'];
+	if (strpos($uri, '..') == false) {
+		$req = "$wwwpath/$uri";
+		if (file_exists($req) &amp;&amp; is_file($req)) {
+			return false;
+		}
+	}
+
+	// private keys, server settings and sensitive information
+	$wwwconf = include "$siteroot/conf.php";
+	$wwwconf['wwwpath'] = $wwwpath;
+
+	require "{$wwwconf['syspath']}/main.php";
+
+	// invoke main
+	$exitcode = main($wwwconf);
+
+	// handle system failure
+	if ($exitcode != 0) {
+		$errpage = "$wwwpath/err/$exitcode.html";
+		if (file_exists($errpage)) {
+			http_response_code($exitcode);
+			include $errpage;
+		}
+	}
+</code></pre>
+
+<h5>console</h5>
+
+<p>It's fairly simply to setup other specialized entry points:</p>
+
+<pre><code>#!/usr/bin/env php
+&lt;?php
+
+	$syspath = realpath(__DIR__);
+	$logspath = realpath("$syspath/logs");
+
+	require "$syspath/main.autoloader.php";
+	require "$syspath/main.context.php";
+
+	// init autoloader
+	$autoloader = \appname\main\autoloader($syspath);
+
+	if ($autoloader === null) {
+		die(" Err: Missing dependencies.\n");
+	}
+
+	// init main context
+	$context = \appname\main\context($syspath, $logspath, $autoloader);
+
+	// create console handler
+	$console = \fenrir\Console::instance($context);
+
+	// invoke main
+	$commands = $context->confs->read('freia/commands');
+	return $console->main($commands);
+
+</code></pre>
 
 <h3 id="doc-freia-defining-a-module">Defining a Module</h3>
 
-<p></p>
+<p>A freia module is defined by prividing a namespace (we recomend always
+providing a subnamespace as well) and setting the type to
+<code>freia-module</code> in the <code>composer.json</code> of the module.</p>
 
-<h3 id="doc-freia-errors">Exceptions &amp; Errors</h3>
+<pre><code>{
+	"name": "yournamespace/subnamespace",
+	"type": "freia-module"
+}</code></pre>
 
-<p></p>
+<p>The above is the minimum requirement and will work fine if you maintain
+the module only in your version control but if you wish to create a
+distributable module you'll need to add a few more fields to the file, please
+refer to the <a href="https://getcomposer.org/doc/04-schema.md">composer
+schema documentation</a> for all requirements.</p>
 
-<h3 id="doc-freia-interfaces">Interfaces</h3>
+<p>There is no mandatory directories in the module structure. Of the directories
+freia only requires <code>src</code> and <code>confs</code>; anything else
+is considered specialized functionality (this includes tests). Here is a module
+example:</p>
 
-<p></p>
+<pre><code>your_module/
+	confs/
+	src/
+	composer.json</code></pre>
+
 
 <h2 id="hlin"><code>hlin</code> Module</h2>
+
+<p></p>
+
+<h3 id="doc-hlin-interfaces">Interfaces</h3>
+
+<p></p>
+
+<h3 id="doc-hlin-errors">Exceptions &amp; Errors</h3>
 
 <p></p>
 
@@ -492,12 +798,13 @@ line in said system.</p>
 					<li><a class="toc-Entry" href="#doc-freia-autoloading">Autoloading</a></li>
 					<li><a class="toc-Entry" href="#doc-freia-init">Initialization</a></li>
 					<li><a class="toc-Entry" href="#doc-freia-defining-a-module">Defining a Module</a></li>
-					<li><a class="toc-Entry" href="#doc-freia-errors">Exceptions &amp; Errors</a></li>
-					<li><a class="toc-Entry" href="#doc-freia-interfaces">Interfaces</a></li>
+
 				</ol>
 				<div class="toc-Title"><a href="#hlin">hlin Module</a></div>
 				<ol>
+					<li><a class="toc-Entry" href="#doc-hlin-interfaces">Interfaces</a></li>
 					<li><a class="toc-Entry" href="#doc-hlin-contexts">Using Contexts</a></li>
+					<li><a class="toc-Entry" href="#doc-hlin-errors">Exceptions &amp; Errors</a></li>
 				</ol>
 				<p class="toc-Subtitle">tools</p>
 				<ul>
