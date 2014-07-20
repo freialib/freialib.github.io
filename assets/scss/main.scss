@@ -1,16 +1,36 @@
 @import 'conf/reset';
-@import 'conf/colors';
-@import 'conf/assets';
 @import 'conf/zindex';
+@import 'conf/colors';
+@import 'conf/fonts';
 @import 'conf/debug';
 
-// vendor
+// Modules
+// -------
+
+// window Modules
+@import 'modules/window';
+
+// toc Module
+@import 'modules/toc';
+
+// keyinfo Module
+@import 'modules/keyinfo';
+
+// doc Module
+@import 'modules/doc';
+
+// code Module
+@import 'modules/code';
+
+// Vendor
+// ------
+
+// highlightjs Module
+.hljs.hljs {
+	background: #fff;
+}
+
+// fontawesome Module
 $fa-font-path: 'fonts';
 @import 'vendor/font-awesome/font-awesome';
 .fa { width: 1em; text-align: center; }
-
-// modules
-@import 'modules/window';
-@import 'modules/toc';
-@import 'modules/keyinfo';
-@import 'modules/doc';

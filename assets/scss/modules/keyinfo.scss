@@ -1,5 +1,5 @@
 .keyinfo {
-	font-family: $sansSerifFonts;
+	font-family: $sansSerif;
 	padding-left: 20px;
 	margin-bottom: 25px;
 	margin-top: 25px;
@@ -15,12 +15,21 @@
 }
 
 .keyinfo > ul {
+	font-family: $serif;
 	margin-left: 7px;
+
+	a {
+		padding-left: 3px;
+	}
+}
+
+.keyinfo > ul > li {
+	padding-top: 3px;
 }
 
 .keyinfo > ul a {
 	text-decoration: underline;
-	font-size: 14px;
+	font-size: 16px;
 
 	&:hover, &.d-hover {
 		text-decoration: none;

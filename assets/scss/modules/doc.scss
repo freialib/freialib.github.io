@@ -1,21 +1,84 @@
+$doc_imagePath: 'images/modules/doc/';
+$doc_fontfamily: Helvetica Neue, Helvetica, Arial;
+// ----------------------------------------------------------------------------
+
 .doc {
 	width: 570px;
+	font-family: $doc_fontfamily;
+	font-size: 14px;
+	line-height: 24px;
 }
 
-.doc > pre {
-	font-family: $monospaceFonts;
-	font-size: 12px;
-	background: #fff;
-	padding: 20px;
-	border: 1px solid $alt1;
+.doc > p a {
+	text-decoration: none;
+	border-bottom: 1px solid $main1;
+	color: #424242;
+
+	&:hover, &.d-hover {
+		color: #000;
+		border-bottom-color: $accent;
+	}
 }
 
-.doc > p + p {
-	margin-top: 1em;
+.doc > h1 {
+	font-family: $sansSerif;
+}
+
+.doc > h2 {
+	margin-top: 2em;
+	font-family: $sansSerif;
+	border-bottom: 1px solid $alt2;
+	display: inline-block;
+
+	& > code {
+		font-size: 25px;
+		letter-spacing: 2px;
+	}
+}
+
+.doc > h3 {
+	font-family: $sansSerif;
+	font-weight: normal;
+	font-size: 20px;
+}
+
+.doc > h4 {
+	font-family: $sansSerif;
+}
+
+.doc > h5 {
+	font-family: $sansSerif;
+}
+
+.doc > h6 {
+	font-family: $sansSerif;
 }
 
 .doc > hr {
-	background: $docDelimiterImage repeat-x 0px 0px;
+	background: transparent url('#{$doc_imagePath}delimiter.png') repeat-x 0px 0px;
 	border: 0;
 	height: 1px;
+	margin: 25px 0 20px 0;
+}
+
+.doc > p + p {
+	margin-top: 1.5em;
+}
+
+.doc > pre {
+	box-shadow: 3px 3px 7px 0px rgba(50, 50, 50, 0.35);
+	tab-size: 4;
+	font-family: $monospace;
+	font-size: 12px;
+	line-height: 16px;
+	background: #fff;
+	padding: 5px;
+	border-top: 2px solid $alt1;
+}
+
+// ---- Components ------------------------------------------------------------
+
+.doc-Note {
+	font-size: 85%;
+	line-height: 1.5;
 }

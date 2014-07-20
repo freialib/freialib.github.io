@@ -1,23 +1,467 @@
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
 <title>freia - the PHP library</title>
-<meta rel="description" content="Modern, comprehensive, modular, easy to use library for long lasting projects."/>
+<meta rel="description" content="Tome of php server magic that you can add to any project"/>
 <link rel="stylesheet" href="assets/main.css"/>
+<link rel="stylesheet"
+     href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css">
+
+<body>
 
 <div class="window">
 
 	<div class="window-Body">
-		<h1 class="window-Logo">
+		<h1 class="window-Logo" id="doc-intro">
 			<span class="window-Logotext">Freia - the PHP library</span>
 		</h1>
 
-		<div class="doc">
 
-			<p>Hi there.</p>
-			<p>Freia is a php library for building modular web apps. Unfortunately the library is currently in the prototype stage which is not open due to being too volatile.</p>
-			<p><i>Please check back later.<br/>Freia Team</i></p>
+<!-- Documentation -->
+<div class="doc">
 
-		</div>
+<p>The <a href="https://github.com/freialib">freia library</a>
+is a tome of php server magic that you can add to any project, be it an exotic
+blank page, that awesome box of horrors you unwillingly inherited from your dev
+grandma' (which you're too scared to touch), even that web framework that's the
+fastest "hello world" claptrap of the month.</p>
+
+<p class="doc-Note">Unlike other solutions even if you don't pick freia to
+start a project, or don't pick freia for your main logic, we've designed freia
+to be a solution you can always goto. It's never too late to use
+freia.</small></p>
+
+<p>Among the solutions we provide in the main modules, you'll find easy routing
+though <code class="code code-class">HttpDispatcher</code></b>, programatic
+security and access control via <code class="code code-class">SecurityID</code>,
+a easy to use cli system via <code class="code code-class">Console</code>,
+flexible migration system via the <code class="code code-class">pdx</code>
+command, and much more...
+
+<p>The code is clean and easy to read, verifiable, self contained and
+replacable.</p>
+
+<p>The project is <a href="https://github.com/freialib">hosted on GitHub</a>.
+You can report bugs and discuss features on the issue pages. Feel free to also
+send tweets on <a href="https://twitter.com/">twitter</a> using the hashtag
+<code>#freialib</code>, or post questions on
+<a href="http://stackoverflow.com/">stackoverflow</a> using the
+<code>freialib</code> tag.</p>
+
+<p><i>The freia library is distributed with a <b>BSD 2-clause license</b>.</i>
+<br/><small>See <a href="#doc-license">License</a> section for more
+information.</small></p>
+
+<h2 id="doc-using">Installing</h2>
+
+<h3>Existing Codebase</h3>
+<p>If you have an existing codebase the way you include freia is hugely
+dependent on your circumstances. We recomend reading the
+<a href="#freia">freia Module</a> docs. After you understand the
+requirements for <a href="#doc-freia-autoloading">autoloading</a> and
+<a href="#doc-freia-init">initialization</a> you should have a good idea
+what you need to do in your project to integrate freia.</p>
+
+<h3>Fresh Start</h3>
+
+<p>The recomended method to get the freia library is via
+<a href="https://getcomposer.org/">composer</a>. We recomend keeping the
+<code>composer.lock</code> file and also commiting all the files to your
+version control system rather then rely on re-downloading each time. It is much
+more reliable to rely on the servers your code base is on then several servers
+all over the internet, any of which can go down and break your project.</p>
+
+<p>It is prefered to not rely on composer on the server side, which isn't a
+problem even if you want to clone to your server if you simply commit all your
+dependencies into your revision control system.</p>
+
+<h4>Minimal version</h4>
+
+<pre><code>{
+	"autoload": {
+		"freia": {
+			"load": [ "system", "linker", "vendor" ]
+		}
+	},
+	"require": {
+		"php": ">=5.4.10",
+		"freia": "~1.0",
+		"hlin/archetype": "~1.0",
+		"hlin/attribute": "~1.0",
+		"hlin/tools": "~1.0"
+	}
+}</code></pre>
+
+<h4>All modules</h4>
+
+<pre><code>{
+	"autoload": {
+		"freia": {
+			"load": [ "system", "linker", "vendor" ]
+		}
+	},
+	"require": {
+		"php": ">=5.4.10",
+		"freia": "~1.0",
+		"hlin/archetype": "~1.0",
+		"hlin/attribute": "~1.0",
+		"hlin/tools": "~1.0",
+		"fenrir/system": "~1.0",
+		"fenrir/tools": "~1.0"
+	}
+}</code></pre>
+
+<h4>Basic framework for getting started</h4>
+
+<p>We provide a basic framework if you start from a completely blank
+slate to help you get going. We do recomend people make their own project
+structure from scratch to get the most benefit by avoiding any unncesary
+clutter that a generic structure might impose, but if you're in a hurry or need
+a reference point here you go:</p>
+
+<pre><code class="no-highlight">composer create-project freialib/framework YOUR_PROJECT/ "~1.0"</code></pre>
+
+<p>If you don't have the composer command run the following to get it:</p>
+
+<pre><code class="no-highlight">curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer</code></pre>
+
+<h2 id="doc-license">License</h2>
+
+<p>The freia library is distributed using a
+<a href="http://en.wikipedia.org/wiki/BSD_licenses">BSD 2-clause license</a>.
+You can find the license text in the <a href="/license.txt">license.txt</a>
+file. The BSD 2-clause license allows you to use freia for both open source and
+commercial projects with little to no restrictions; mainly you just need to
+maintain the license text in the files, even if you make modifications to the
+files in question.</p>
+
+<h2 id="doc-foreword">Foreword</h2>
+
+<p>This document is the entire freia documentation, the official documention,
+and the main and only format of the docs.</p>
+
+<p>We are intentionally avoiding a printable and automatically generated
+versions due to the complexity that introduces both to maintaining the docs,
+writing the docs, contributing to the docs, the organization of the docs, as
+well as the complexity it adds to the code. We don't believe extremly long
+blocks of documentation in code to be all that useful to
+inline auto-complete.</p>
+
+<p>If you wish to correct or add anything to this document simply go to the
+<a href="https://github.com/freialib/freialib.github.io/blob/master/index.html">file
+of this document on the site's github repo</a> and press the <code>Edit</code>
+button. You will need a <a href="https://github.com/">free Github account</a>.
+Github will magically create a copy of the repo and file (fork), and allow you
+put your changes into a patch which you can send back to us to integrate (pull
+request).</p>
+
+<p>The documentation is organized into topics and modules. Modules have
+have concepts and classes organized in sub-namespaces. Sub-namespaces may be
+organized into categories when relevant (the category will be in
+paranthesis).</p>
+
+<div class="toc">
+	<div class="toc-Title"><a href="#">Topic 1</a></div>
+	<div class="toc-Title"><a href="#">Topic 2</a></div>
+	<div class="toc-Title"><a href="#">namespace Module</a></div>
+	<ol>
+		<li><a class="toc-Entry" href="#">Concept 1</a></li>
+		<li>
+			<a class="toc-Entry" href="#">Concept 2</a>
+			<ul>
+				<li><a class="toc-Entry" href="#">Concept 2.1</a></li>
+				<li><a class="toc-Entry" href="#">Concept 2.2</a></li>
+				<li><a class="toc-Entry" href="#">Concept 2.3</a></li>
+			</ul>
+		</li>
+		<li><a class="toc-Entry" href="#">Concept 3</a></li>
+	</ol>
+	<p class="toc-Subtitle">subnamespace</p>
+	<ul>
+		<li><a class="toc-Entry" href="#">Class 1</a></li>
+		<li><a class="toc-Entry" href="#">Class 2</a></li>
+	</ul>
+	<p class="toc-Subtitle">subnamespace (category)</p>
+	<ul>
+		<li><a class="toc-Entry" href="#">Class 3</a></li>
+		<li><a class="toc-Entry" href="#">Class 4</a></li>
+	</ul>
+</div>
+
+<p>We try to conver everything, but we do not try to cover everything
+systematically. This may seem strange, but we have a lot of details in the way
+things are implemented, convering things one by one is actually a lot more
+confusing then presenting the concept, ie. the problem space it was designed
+to solve.</p>
+
+<p>In this document we use universal namespace notation to refer both classes
+and namespaces and combinations there of. As an example
+<code>\hlin\archetype\Context</code> is written as
+<code>hlin.archetype.Context</code> which is also the format that's used and
+recomended for configuration files since it avoids confusing escaping of the
+<code>\</code> character.</p>
+
+<h2 id="freia"><code>freia</code> Module</h2>
+
+<p>The freia module consists of only the main <code>freia</code> namespace. To
+allow for working with composer the module is written in a
+<a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a> format.</p>
+
+<p>All other modules in the library are defined as
+<code>freia-cfs-module</code>s.</p>
+
+<p>The namespace actually only really contains one class
+<code>freia.SymbolLoader</code> that's independent, the other utility classes
+contained within, outside of <code>freia.Panic</code> which is a conventions
+requirement (see: <a href="#doc-freia-errors">exceptions &amp; errors</a>),
+actually require the autoloader to be active for the dependencies to resolve
+(mainly interface dependencies).</p>
+
+<h3 id="doc-freia-autoloading">Autoloading</h3>
+
+<p><code>fenrir.SymbolLoader</code> is the class you should be looking when
+trying to initialized the autoloader. The class <code>fenrir.Autoloader</code>
+is intended for testing only. You can not initialize it with out having
+<code>fenrir.SymbolLoader</code> already initialized.</p>
+
+<p>Simple autoloader initialization:</p>
+
+<pre><code>&lt;?php
+
+	$syspath = realpath(__DIR__);
+
+	// paths where to search for freia modules (relative to $syspath)
+	$paths = ['system', 'vendor'];
+
+	// include composer autoloader
+	require "$syspath/vendor/autoload.php";
+
+	// initialize
+	$autoloader = \freia\SymbolLoader::instance($syspath, $paths);
+
+	// add as main autoloader
+	$registered = $autoloader->register(true);
+
+</code></pre>
+
+<p>We recomend storing the paths configuration in your
+<code>composer.json</code>. Building on the above example you would just change
+<code>$paths</code> as follows:</p>
+
+<pre><code>&lt;?php
+
+	// ...
+
+	$composerjson = "$syspath/composer.json";
+	file_exists($composerjson) or die(" Err: missing composer.json\n");
+	$env = json_decode(file_get_contents($composerjson), true);
+	$paths = $env['autoload']['freia'];
+
+	// ...
+
+</code></pre>
+
+<h4>Conventions</h4>
+
+<h3 id="doc-freia-initialization">Initialization</h3>
+
+<p></p>
+
+<h3 id="doc-freia-defining-a-module">Defining a Module</h3>
+
+<p></p>
+
+<h3 id="doc-freia-errors">Exceptions &amp; Errors</h3>
+
+<p></p>
+
+<h3 id="doc-freia-interfaces">Interfaces</h3>
+
+<p></p>
+
+<h2 id="hlin"><code>hlin</code> Module</h2>
+
+<p></p>
+
+<h3 id="doc-hlin-contexts">Using Contexts</h3>
+
+<p></p>
+
+<h3 id="hlin-tools-Arr"><code>hlin.tools.Arr</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-tools-Text"><code>hlin.tools.Text</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-tools-Time"><code>hlin.tools.Time</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-tools-PHP"><code>hlin.tools.PHP</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Context"><code>hlin.archetype.Context</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Filesystem"><code>hlin.archetype.Filesystem</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Configs"><code>hlin.archetype.Configs</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-CLI"><code>hlin.archetype.CLI</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Web"><code>hlin.archetype.Web</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Logger"><code>hlin.archetype.Logger</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Request"><code>hlin.archetype.Request</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Response"><code>hlin.archetype.Response</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Autoloader"><code>hlin.archetype.Autoloader</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-archetype-Filemap"><code>hlin.archetype.Filemap</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-attribute-Contextual"><code>hlin.attribute.Contextual</code> class</h3>
+
+<p></p>
+
+<h3 id="hlin-attribute-Configurable"><code>hlin.attribute.Configurable</code> class</h3>
+
+<p></p>
+
+<h2 id="fenrir"><code>fenrir</code> Module</h2>
+
+<p></p>
+
+<h3 id="doc-fenrir-console">Using the Console</h3>
+
+<p></p>
+
+<h4 id="doc-fenrir-command">Creating Commands</h4>
+
+<p></p>
+
+<h4 id="doc-fenrir-help-commands">Help Commands</h4>
+
+<p></p>
+
+<h4 id="doc-fenrir-honeypot">Honeypot Command</h4>
+
+<p></p>
+
+<h4 id="doc-fenrir-make">Make Command</h4>
+
+<p></p>
+
+<h4 id="doc-fenrir-other-commands">Other Commands</h4>
+
+<p></p>
+
+<h3 id="doc-fenrir-pdx">Paradox Migrations</h3>
+
+<p></p>
+
+<h3 id="doc-fenrir-routing">Routing</h3>
+
+<p></p>
+
+<h3 id="fenrir-system-MysqlDatabase"><code>fenrir.system.MysqlDatabase</code> class</h3>
+
+<p></p>
+
+<h3 id="fenrir-tools-Console"><code>fenrir.tools.Console</code> class</h3>
+
+<p></p>
+
+<h3 id="fenrir-tools-Pdx"><code>fenrir.tools.Pdx</code> class</h3>
+
+<p></p>
+
+<h2 id="doc-philosophy">Philosophy</h2>
+
+<h3>Trade-offs</h3>
+
+<p>In the trade-off between: short-term convenience for the dev writing the
+code <b>over</b> long-term convenience, we have chosen with freia to be
+heavily biased towards solutions that offer long term benefits to every type of
+dev that is likely to have to "handle" the code; sorry short-term convenience
+people.</p>
+
+<p>Depending on the context, this can mean solutions are more programatic and
+more generic, configuration files aren't magical (ie. you have to inject the
+values from them, classes don't just read "the One"), things such as class
+convention are an application domain problem (not a library concern), and some
+systems just handled differently due to us avoiding global states and "globally
+applying conventions" in general. Of course, you don't have to buy into this,
+you are free to build solutions on top of freia that mimick the conventions you
+gain value from.</p>
+
+<h3>Ease of Use, Perfection, Correctness, Testing</h3>
+
+<p>You can have everything, but you can't have everything at the same time.</p>
+
+<p>In general we try to error on the side of fully supporting with the best
+possible solution the scenarios we consider to be important in practice, and
+will generally weight opinion on the same basis. What this implies is that in
+the grand scheme should we consider 100% of scenarios possible in the
+<i>universe</i> our approuch would seem "imperfect." eg. our approuch of using just
+the last word in the class name to map to a folder is not really doing anything
+for <code>ReallyHorriblyLongClasses</code> or classes
+that don't necesarily end in the favorable word at the end. But, in 99% of
+practical casses (<code>HttpDispatcher</code>, <code>MysqlDatabase</code>,
+<code>PdxCommand</code>, <code>ExampleController</code>, etc) the handling
+is ideal: does exactly what you want, lets you name the way you want to, it's
+really easy to understand.</p>
+
+<p>Testing, more specifically "test driven development," is another example in
+this category. We value our tests very very much, however we don't agree with
+the blind testing that comes with test driven development. We like to think of
+testing as a consequence of seeking automated feedback on the code quality, not
+an arhitecture tool. For most cases this distincition isn't noticible outside
+of the difference that we think of tests and arhitecture at the same time
+interchangably based on the component of the domain work is focused on. In
+general this does mean we're very cautios of pattern required only for the
+purpose of testing (we try to keep them to a minimum), and we're very open to
+all methods of testing not just unit testing.</p>
+
+<p>We believe that code which is complicated too much by complex testing
+and testing patterns offers bad feedback on it's correctness and doesn't help
+in it's maintenance (modifications, refactoring). Full coverage with unit tests
+doesn't mean all possible scenarios are covered, just that every code path is
+covered. Poor code redability contributes to poor system visiblity and it's the
+system which you should be seeking correctness feedback on, not every single
+line in said system.</p>
+
+<h2 id="doc-changelog">Major Changes</h2>
+
+<p><i>Nothing in this section at the moment. Check back later.</i></p>
+
+</div>
+<!-- /Documentation -->
+
+
 	</div>
 
 	<div class="window-Nav">
@@ -28,16 +472,100 @@
 			<div class="keyinfo">
 				<span class="keyinfo-Lead">
 					<i class="fa fa-download"></i>
-					<s><a href="#">Get Freia</a> <span class="keyinfo-Version">v0.0.0</span></s>
+					<a href="https://github.com/freialib/framework/archive/master.zip">Get Freia</a> <span class="keyinfo-Version">v1.0.0</span>
 				</span>
 				<ul>
-					<li><s><i class="fa fa-book"></i> <a href="#getting-started">Getting Started</a></s></li>
-					<li><s><i class="fa fa-heart"></i> <a href="#contributing">Contributing</a></s></li>
-					<li><s><i class="fa fa-history"></i> <a href="#">History</a></s></li>
-					<li><i class="fa fa-github"></i> <a href="https://github.com/freialib">Github</a></li>
+					<li><i class="fa fa-legal"></i> <a href="/license.txt">BSD 2-clause License</a></li>
+					<li><i class="fa fa-github"></i> <a href="https://github.com/freialib">Github Repository</a></li>
+					<li><i class="fa fa-twitter"></i> <a href="https://twitter.com/search?f=realtime&amp;q=%23freialib">Twitter <code>#freialib</code></a>
+					<li><i class="fa fa-stack-exchange"></i> <a href="http://stackoverflow.com/search?q=%23freialib">Ask the community</a></li>
+
 				</ul>
+			</div>
+			<div class="toc">
+				<div class="toc-Title"><a href="#doc-intro">Introduction</a></div>
+				<div class="toc-Title"><a href="#doc-using">Installing</a></div>
+				<div class="toc-Title"><a href="#doc-license">License</a></div>
+				<div class="toc-Title"><a href="#doc-foreword">Foreword</a></div>
+				<div class="toc-Title"><a href="#freia">freia Module</a></div>
+				<ol>
+					<li><a class="toc-Entry" href="#doc-freia-autoloading">Autoloading</a></li>
+					<li><a class="toc-Entry" href="#doc-freia-init">Initialization</a></li>
+					<li><a class="toc-Entry" href="#doc-freia-defining-a-module">Defining a Module</a></li>
+					<li><a class="toc-Entry" href="#doc-freia-errors">Exceptions &amp; Errors</a></li>
+					<li><a class="toc-Entry" href="#doc-freia-interfaces">Interfaces</a></li>
+				</ol>
+				<div class="toc-Title"><a href="#hlin">hlin Module</a></div>
+				<ol>
+					<li><a class="toc-Entry" href="#doc-hlin-contexts">Using Contexts</a></li>
+				</ol>
+				<p class="toc-Subtitle">tools</p>
+				<ul>
+					<li><a class="toc-Entry" href="#hlin-tools-Arr">Arr</a></li>
+					<li><a class="toc-Entry" href="#hlin-tools-Text">Text</a></li>
+					<li><a class="toc-Entry" href="#hlin-tools-Time">Time</a></li>
+					<li><a class="toc-Entry" href="#hlin-tools-PHP">PHP</a></li>
+				</ul>
+				<p class="toc-Subtitle">archetype (system)</p>
+				<ul>
+					<li><a class="toc-Entry" href="#hlin-archetype-Context">Context</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Filesystem">Filesystem</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Configs">Configs</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Flagparser">CLI</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Web">Web</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Logger">Logger</a></li>
+				</ul>
+				<p class="toc-Subtitle">archetype (general)</p>
+				<ul>
+					<li><a class="toc-Entry" href="#hlin-archetype-Request">Request</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Response">Response</a></li>
+				</ul>
+				<p class="toc-Subtitle">archetype (freia)</p>
+				<ul>
+					<li><a class="toc-Entry" href="#hlin-archetype-Autoloader">Autoloader</a></li>
+					<li><a class="toc-Entry" href="#hlin-archetype-Filemap">Filemap</a></li>
+				</ul>
+				<p class="toc-Subtitle">attribute</p>
+				<ul>
+					<li><a class="toc-Entry" href="#hlin-attribute-Contextual">Contextual</a></li>
+					<li><a class="toc-Entry" href="#hlin-attribute-Configurable">Configurable</a></li>
+				</ul>
+				<div class="toc-Title"><a href="#fenrir">fenrir Module</a></div>
+				<ol>
+					<li>
+						<a class="toc-Entry" href="#doc-fenrir-console">Using the Console</a>
+						<ul>
+							<li><a class="toc-Entry" href="#doc-fenrir-command">Creating Commands</a></li>
+							<li><a class="toc-Entry" href="#doc-fenrir-help-commands">Help Commands</a></li>
+							<li><a class="toc-Entry" href="#doc-fenrir-honeypot">Honeypot Command</a></li>
+							<li><a class="toc-Entry" href="#doc-fenrir-make">Make Command</a></li>
+							<li><a class="toc-Entry" href="#doc-fenrir-other-commands">Other Commands</a></li>
+						</ul>
+					</li>
+					<li><a class="toc-Entry" href="#doc-fenrir-pdx">Paradox Migrations</a></li>
+					<li><a class="toc-Entry" href="#doc-fenrir-routing">Routing</a></li>
+				</ol>
+				<p class="toc-Subtitle">system</p>
+				<ul>
+					<li><a class="toc-Entry" href="#fenrir-system-MysqlDatabase">MysqlDatabase</a></li>
+				</ul>
+				<p class="toc-Subtitle">tools</p>
+				<ul>
+					<li><a class="toc-Entry" href="#fenrir-tools-Console">Console</a></li>
+					<li><a class="toc-Entry" href="#fenrir-tools-Console">Pdx</a></li>
+				</ul>
+				<div class="toc-Title"><a href="#doc-philosophy">Philosophy</a></div>
+				<div class="toc-Title"><a href="#doc-changelog">Major Changes</a></div>
 			</div>
 		</div>
 	</div>
 
 </div>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+<script>
+	hljs.configure({
+		tabReplace: '    ', // 4 spaces
+	});
+	hljs.initHighlightingOnLoad();
+</script>

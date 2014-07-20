@@ -1,6 +1,21 @@
 .toc {
 	padding-left: 13px;
 	padding-bottom: 20px;
+	line-height: 1.2;
+}
+
+.toc > ol {
+	margin-left: 32px;
+}
+
+.toc > ol > li {
+	list-style-type: square;
+
+	& > ul > li {
+		list-style-type: lower-greek;
+		margin-left: 20px;
+		font-size: 12px;
+	}
 }
 
 .toc > ul {
@@ -16,15 +31,18 @@
 // ---- Components ------------------------------------------------------------
 
 .toc-Title {
-	text-decoration: underline;
-	font-size: 18px;
+	font-size: 14px;
+	letter-spacing: 1px;
 	font-weight: bold;
-	display: block;
 	margin-bottom: 14px;
-	margin-top: 25px;
-	color: $main2;
+	margin-top: 16px;
 
-	&:hover, &.d-hover {
+	a {
+		text-decoration: underline;
+		color: $main2;
+	}
+
+	a:hover, a.d-hover {
 		text-decoration: none;
 		color: $main2;
 	}

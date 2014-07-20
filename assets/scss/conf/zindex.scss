@@ -9,7 +9,10 @@
 // elements inside absolute positioned elements define a zindex for both and
 // indent the variable entries bellow accordingly to specify the nesting
 
-$zindexModal   : 3000;
-$zindexOverlay : 2000;
-$zindexSidebar : 1000;
 $zindexHorizon : 0;
+$zindexSidebar : 1000;
+// ---
+$zindexOverlay : 2000;
+$zindexModal   : $zindexOverlay + 100;
+
+

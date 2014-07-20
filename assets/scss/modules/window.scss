@@ -1,25 +1,29 @@
+$window_zindex: 0 !default;
+$window_imagePath: 'images/modules/window/';
+// ----------------------------------------------------------------------------
+
 .window {
 	position: relative;
 	z-index: $zindexHorizon;
 	background-color: #e1e1e1;
-	background-image: $windowBgImage;
+	background-image: url('#{$window_imagePath}subtlepatterns/fabric_of_squares_gray.png');
 	min-height: 100%;
 }
 
 // ---- Components ------------------------------------------------------------
 
 .window-Body {
-	font-family: $serifFonts;
+	font-family: $serif;
 	margin-left: 245px;
 	position: relative;
-	padding-top: 150px;
+	padding-top: 170px;
 	padding-left: 35px;
 	padding-bottom: 200px;
 	min-height: 100%;
 }
 
 .window-Nav {
-	font-family: $sansSerifFonts;
+	font-family: $sansSerif;
 	width: 245px;
 	position: fixed;
 	top: 0; bottom: 0; left: 0;
@@ -39,7 +43,7 @@
 	padding-right: 5px;
 	box-sizing: border-box;
 	text-align: right;
-	background-image: $windowNavheadBorderImage;
+	background-image: url('#{$window_imagePath}navhead-border.png');
 	background-repeat: no-repeat;
 	background-position: -15px 29px;
 }
@@ -50,11 +54,12 @@
 
 .window-Logo {
 	position: absolute;
-	top: 0; left: 7px;
-	background-image: $windowLogoImage;
+	top: 0; left: 0;
+	background-image: url('#{$window_imagePath}logo.png');
+	background-position: no-repeat;
 	padding: 0; margin: 0;
 	line-height: 1;
-	width: 407px; height: 98px;
+	width: 280px; height: 145px;
 }
 
 .window-Logotext {
