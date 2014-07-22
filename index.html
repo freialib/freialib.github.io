@@ -47,9 +47,17 @@ send tweets on <a href="https://twitter.com/">twitter</a> using the hashtag
 <a href="http://stackoverflow.com/">stackoverflow</a> using the
 <code>freialib</code> tag.</p>
 
-<p><i>The freia library is distributed with a <b>BSD 2-clause license</b>.</i>
+<p><i>The freia library is distributed under a <b>BSD 2-clause license</b>.</i>
 <br/><small>See <a href="#doc-license">License</a> section for more
 information.</small></p>
+
+<p><i><b>The freia library is currently still in early development</b>,
+everything that goes in it is planned and a lot of it's code is consolidation
+and of tooling of code the authors have already written. Things are still being
+documented, tests written/moved/etc. The prototype version (v0.0.0) is
+available if you wish to take a look at it. Code will be split up into
+independent modules; for easy refactoring the code is currently in a single
+repo at this stage in development.</i></p>
 
 <h2 id="doc-using">Installing</h2>
 
@@ -705,60 +713,115 @@ example:</p>
 
 <p></p>
 
-<h2 id="doc-philosophy">Philosophy</h2>
+<h2 id="ran"><code>ran</code> Module</h2>
 
-<h3>Trade-offs</h3>
+<p></p>
 
-<p>In the trade-off between: short-term convenience for the dev writing the
-code <b>over</b> long-term convenience, we have chosen with freia to be
-heavily biased towards solutions that offer long term benefits to every type of
-dev that is likely to have to "handle" the code; sorry short-term convenience
-people.</p>
+<h3 id="doc-ran-organizing-views">Organizing Views</h3>
 
-<p>Depending on the context, this can mean solutions are more programatic and
-more generic, configuration files aren't magical (ie. you have to inject the
-values from them, classes don't just read "the One"), things such as class
-convention are an application domain problem (not a library concern), and some
-systems just handled differently due to us avoiding global states and "globally
-applying conventions" in general. Of course, you don't have to buy into this,
-you are free to build solutions on top of freia that mimick the conventions you
-gain value from.</p>
+<p></p>
 
-<h3>Ease of Use, Perfection, Correctness, Testing</h3>
+<h3 id="ran-tools-Temp"><code>ran.tools.Temp</code> class</h3>
 
-<p>You can have everything, but you can't have everything at the same time.</p>
+<p><code>Temp</code> is used for easily creating placeholder content.</p>
 
-<p>In general we try to error on the side of fully supporting with the best
-possible solution the scenarios we consider to be important in practice, and
-will generally weight opinion on the same basis. What this implies is that in
-the grand scheme should we consider 100% of scenarios possible in the
-<i>universe</i> our approuch would seem "imperfect." eg. our approuch of using just
-the last word in the class name to map to a folder is not really doing anything
-for <code>ReallyHorriblyLongClasses</code> or classes
-that don't necesarily end in the favorable word at the end. But, in 99% of
-practical casses (<code>HttpDispatcher</code>, <code>MysqlDatabase</code>,
-<code>PdxCommand</code>, <code>ExampleController</code>, etc) the handling
-is ideal: does exactly what you want, lets you name the way you want to, it's
-really easy to understand.</p>
+<pre><code>&lt;?php namespace ran; ?&gt;
 
-<p>Testing, more specifically "test driven development," is another example in
-this category. We value our tests very very much, however we don't agree with
-the blind testing that comes with test driven development. We like to think of
-testing as a consequence of seeking automated feedback on the code quality, not
-an arhitecture tool. For most cases this distincition isn't noticible outside
-of the difference that we think of tests and arhitecture at the same time
-interchangably based on the component of the domain work is focused on. In
-general this does mean we're very cautios of pattern required only for the
-purpose of testing (we try to keep them to a minimum), and we're very open to
-all methods of testing not just unit testing.</p>
+&lt;div class=&quot;person&quot;&gt;
+	&lt;div class=&quot;person-Avatar&quot;&gt;
+		&lt;img src=&quot;&lt;?= Temp::img(100, 100) ?&gt;&quot;/&gt;
+	&lt;/div&gt;
+	&lt;div class=&quot;person-Meta&quot;&gt;
+		&lt;p&gt;name: &lt;?= Temp::name() ?&gt;&lt;/p&gt;
+		&lt;p&gt;signup: &lt;?= date('Y-m-d', Temp::time()) ?&gt;&lt;/p&gt;
+		&lt;p&gt;tel: &lt;?= Temp::telephone() ?&gt;&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
 
-<p>We believe that code which is complicated too much by complex testing
-and testing patterns offers bad feedback on it's correctness and doesn't help
-in it's maintenance (modifications, refactoring). Full coverage with unit tests
-doesn't mean all possible scenarios are covered, just that every code path is
-covered. Poor code redability contributes to poor system visiblity and it's the
-system which you should be seeking correctness feedback on, not every single
-line in said system.</p>
+<p>While you can use it like the above example the real magic of Temp is that
+when you call (almost all) the methods you get an instance that resolves to a
+random version of what you requested. Here is a simple example of
+the concept:</p>
+
+<pre><code>$name = \ran\Temp::given_name();
+echo $name;
+echo $name;
+echo $name;
+echo $name;
+</code></pre>
+<p>The above may render to...</p>
+<pre><code>Ana
+Bob
+Eve
+Henry</code></pre>
+<p>Of course what it renders to is random, your results may vary.</p>
+
+<p>Most methods of <code>Temp</code> are self explainatory: <code>name</code>,
+<code>given_name</code>, <code>family_name</code>, <code>word</code>,
+<code>words</code>, <code>paragraph</code>, <code>city</code>,
+<code>address</code>, <code>ssn</code>, <code>email</code>,
+<code>telephone</code>, <code>title</code>, <code>fullurl</code>,
+<code>counter</code>.</p>
+
+<p>You can use <code>copies</code> to generate arrays of random things. This
+method takes an array of data and creates an array of copies from it. In
+additin to that you can pass in a 3rd parameter that specifies which of the
+values in your original array are counters and it will increment or randomize
+based on what you specify.</p>
+
+<pre><code>// create random number of copies of entry with random number for viewcount
+// and random number for comments, and incrementing value for id
+$entries = Temp::copies($entry, rand(-20, 10), [
+	'viewcount' => [0, 1000],
+	'comments' => [0, 1000],
+	'id' => 1,
+]);</code></pre>
+<p>When the count is lower then 0 it's interpreted as 0. The reason for
+negative values is so you can specify how often you want to get an
+empty state.</p>
+
+<h3 id="ran-tools-HH"><code>ran.tools.HH</code> class</h3>
+
+<p><code>HH</code> stands for <code>HTMLHeader</code> and maintains utilities
+for programatically managing html header levels. The purpose is to get
+perfect header levels.</p>
+
+<pre><code>HH::next(); # => 'h1'
+HH::next(); # => 'h2'
+
+HH::raise('h2'); # => 'h3'
+HH::raise('h6'); # => 'h6'</code></pre>
+
+<p>You should always store your header units in variables and use them later;
+ using the functions directly isn't practical.</p>
+
+<pre><code>$h1 = HH::next();
+$h2 = HH::next();
+// ...
+&lt;?= "&lt;$h2&gt;My Title&lt;/$h2&gt;" ?&gt;
+</code></pre>
+
+<p>Note that <code>$h1</code> isn't necesarily <code>'h1'</code> and
+<code>$h2</code> isn't necesarily <code>'h2'</code>. If the piece of code in
+the example was in a partial view the headers could resolve to <code>h3</code>
+and <code>h4</code>.</p>
+
+<p>It is recomended you pass the last header to partials; by convention
+<code>$h</code> in the following:</p>
+
+<pre><code>HH::base($h)
+$h1 = HH::next();
+$h2 = HH::next();
+</code></pre>
+
+<p>The following is equivalent to the above.</p>
+
+<pre><code>$h1 = HH::raise($h);
+$h2 = HH::raise($h1);</code></pre>
+
+<p>If you ever need to reset to <code>h1</code>, simply call
+<code>HH::base(null)</code>, or you can just hard code it by doing
+<code>$h1 = 'h1'</code> and move from there.</p>
 
 <h2 id="doc-changelog">Major Changes</h2>
 
@@ -778,7 +841,7 @@ line in said system.</p>
 			<div class="keyinfo">
 				<span class="keyinfo-Lead">
 					<i class="fa fa-download"></i>
-					<a href="https://github.com/freialib/framework/archive/master.zip">Get Freia</a> <span class="keyinfo-Version">v1.0.0</span>
+					<a href="https://github.com/freialib/prototype/archive/master.zip">Get Freia</a> <span class="keyinfo-Version">v0.0.0</span>
 				</span>
 				<ul>
 					<li><i class="fa fa-legal"></i> <a href="/license.txt">BSD 2-clause License</a></li>
@@ -861,7 +924,17 @@ line in said system.</p>
 					<li><a class="toc-Entry" href="#fenrir-tools-Console">Console</a></li>
 					<li><a class="toc-Entry" href="#fenrir-tools-Console">Pdx</a></li>
 				</ul>
-				<div class="toc-Title"><a href="#doc-philosophy">Philosophy</a></div>
+				<div class="toc-Title"><a href="#ran">ran Module</a></div>
+				<ol>
+					<li>
+						<a class="toc-Entry" href="#doc-ran-organizing-views">Organizing Views</a>
+					</li>
+				</ol>
+				<p class="toc-Subtitle">tools</p>
+				<ul>
+					<li><a class="toc-Entry" href="#ran-tools-Temp">Temp</a></li>
+					<li><a class="toc-Entry" href="#ran-tools-HH">HH</a></li>
+				</ul>
 				<div class="toc-Title"><a href="#doc-changelog">Major Changes</a></div>
 			</div>
 		</div>
