@@ -1,0 +1,30 @@
+.d-main1 {
+  background: #212e62;
+}
+
+.d-main2 {
+  background: #090714;
+}
+
+.d-accent {
+  background: #aa331f;
+}
+
+.d-alt1 {
+  background: #aaa9ae;
+}
+
+.d-alt2 {
+  background: lightgray;
+}
+
+.d-swatch {
+  width: 100px;
+  height: 100px;
+  float: left;
+  font-family: monospace;
+  font-size: 18px;
+  color: white;
+}
+
+/*# sourceMappingURL=main.debug.css.map */

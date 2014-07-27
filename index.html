@@ -1,43 +1,1256 @@
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
 <title>freia - the PHP library</title>
-<meta rel="description" content="Modern, comprehensive, modular, easy to use library for long lasting projects."/>
-<link rel="stylesheet" href="assets/main.css"/>
+<meta rel="description"
+      content="Tome of php server magic that you can add to any project"/>
+
+<style type="text/css">
+html,body{padding:0;margin:0;width:100%;height:100%}ol,ul,li{margin:0;padding:0;list-style-type:none}p{margin:0;padding:0}.window{position:relative;z-index:0;background-color:#fbfbfb;background-image:url("/web/images/modules/window/subtlepatterns/fabric_of_squares_gray.png");min-height:100%}.window-Body{font-family:Noto Sans,Tahoma,Geneva,sans-serif;margin-left:245px;position:relative;padding-top:170px;padding-left:35px;padding-bottom:200px;min-height:100%}@media screen and (max-width: 920px){.window-Body{margin-left:0;padding-right:35px;padding-bottom:50px}}
+.window-Nav{font-family:Noto Sans,Tahoma,Geneva,sans-serif;width:245px;position:fixed;top:0;bottom:0;left:0;overflow-y:scroll;background:#fff;box-sizing:border-box;border-right:1px solid #212e62;box-shadow:3px 0px 7px 0px rgba(50,50,50,0.25);height:100%}@media screen and (max-width: 920px){.window-Nav{padding-left:10px;border-top:1px solid #212E62;border-right:0;width:auto;position:static;overflow:auto;box-shadow:none}}
+.window-Navhead{height:30px;font-size:11px;font-weight:bold;padding-top:13px;padding-right:5px;box-sizing:border-box;text-align:right;background-image:url("/web/images/modules/window/navhead-border.png");background-repeat:no-repeat;background-position:-15px 29px}@media screen and (max-width: 920px){.window-Navhead{text-align:left}}
+.window-NavJump{display:none;font-size:12px;margin-bottom:2em;text-align:right}.window-NavJump>a{color:#212e62;text-decoration:none;border-bottom:1px solid #d3d3d3}.window-NavJump>a:hover{border-color:#aaa9ae}@media screen and (max-width: 920px){.window-NavJump{display:block}}
+.window-Navbody{position:relative}@media screen and (max-width: 920px){.window-Navbody{border-right:0;width:auto;position:static;overflow-y:auto;box-shadow:none}}
+.toc{padding-left:13px;padding-bottom:20px;line-height:1.2}.toc>ol{margin-left:32px}.toc>ol>li{list-style-type:square}.toc>ol>li>ul>li{list-style-type:lower-greek;margin-left:20px;font-size:12px}.toc>ul{margin-left:13px}.toc>ul>li:before{content:' - '}.toc-Title{font-size:14px;letter-spacing:1px;font-weight:bold;margin-bottom:14px;margin-top:16px}.toc-Title a{text-decoration:underline;color:#090714}.toc-Title a:hover,.toc-Title a.d-hover{text-decoration:none;color:#090714}.toc-Subtitle{color:#aaa9ae;display:block;margin-left:13px;font-size:12px;font-style:italic;margin-top:10px}.toc-Entry{font-size:13px;color:#090714;text-decoration:none}.toc-Entry:hover,.toc-Entry.d-hover{color:#aa331f;text-decoration:underline}.keyinfo{font-family:Noto Sans,Tahoma,Geneva,sans-serif;padding-left:20px;margin-bottom:25px;margin-top:25px}.keyinfo a{color:#090714;text-decoration:none}.keyinfo a:hover,.keyinfo a.d-hover{color:#aa331f}.keyinfo>ul{font-family:Noto Sans,Tahoma,Geneva,sans-serif;margin-left:7px}.keyinfo>ul a{padding-left:3px}.keyinfo>ul>li{padding-top:3px}.keyinfo>ul a{text-decoration:none;font-size:13px}.keyinfo>ul a:hover,.keyinfo>ul a.d-hover{text-decoration:underline}.keyinfo-Lead{font-size:22px}.keyinfo-Version{font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-size:18px;color:#aaa9ae}.doc{width:570px;font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-size:13px;line-height:24px}@media screen and (max-width: 920px){.doc{width:auto}}
+.doc>p a{text-decoration:none;border-bottom:1px solid #212e62;color:#424242}.doc>p a:hover,.doc>p a.d-hover{color:#000;border-bottom-color:#aa331f}.doc>ul{margin-bottom:1.5em}.doc>ul>li{margin-left:34px;list-style-type:lower-greek}.doc>h1{font-family:Noto Sans,Tahoma,Geneva,sans-serif}.doc>h2{margin-top:2em;font-family:Noto Sans,Tahoma,Geneva,sans-serif;border-bottom:1px solid #d3d3d3;display:inline-block}.doc>h2>code{font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-size:20px;letter-spacing:2px}.doc>h3{font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-weight:normal;font-size:20px}.doc>h4{margin:1em 0;font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-size:16px}.doc>h5{font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-size:13px;margin-bottom:0;padding-bottom:0}.doc>h6{font-family:Noto Sans,Tahoma,Geneva,sans-serif}.doc>hr{background:transparent url("/web/images/modules/doc/delimiter.png") repeat-x 0px 0px;border:0;height:1px;margin:25px 0 20px 0}.doc>p+p{margin-top:0.7em}.doc>pre{overflow-x:auto;overflow-y:hidden;margin-right:10px;box-shadow:3px 3px 7px 0px rgba(50,50,50,0.35);tab-size:4;font-size:12px;line-height:16px;background:#fff;padding:5px;border-top:2px solid #aaa9ae}.doc>pre>code{font-family:Source Code Pro,Courier New,Courier,monospace}.doc>pre+h4{margin-top:2em}.doc-Note{font-size:12px;line-height:20px}.code{font-family:Source Code Pro,Courier New,Courier,monospace}.code.code-class{font-family:Noto Sans,Tahoma,Geneva,sans-serif;font-weight:bold;color:#000}
+</style>
+
+<body>
+
+
+
 
 <div class="window">
 
 	<div class="window-Body">
-		<h1 class="window-Logo">
-			<span class="window-Logotext">Freia - the PHP library</span>
+		<h1 class="window--logo" id="doc-intro">
+			<span class="window--logo-Text">Freia - the PHP library</span>
 		</h1>
 
+		<p class="window-NavJump"><a href="#toc">Jump to Table of Contents</a></p>
+
 		<div class="doc">
+			
+<p>The <a href="https://github.com/freialib">freia library</a>
+is a tome of php server magic that you can add to any project, be it an exotic
+blank page, that awesome box of horrors you unwillingly inherited from your dev
+grandma' (which you're too scared to touch), even that web framework that's the
+fastest "hello world" claptrap of the month.</p>
 
-			<p>Hi there.</p>
-			<p>Freia is a php library for building modular web apps. Unfortunately the library is currently in the prototype stage which is not open due to being too volatile.</p>
-			<p><i>Please check back later.<br/>Freia Team</i></p>
+<p class="doc-Note">Unlike other solutions even if you don't pick freia to
+start a project, or don't pick freia for your main logic, we've designed freia
+to be a solution you can always goto. It's never too late to use
+freia.</small></p>
 
+<p>Among the solutions we provide in the main modules, you'll find easy routing
+though <code class="code code-class">HttpDispatcher</code></b>, programatic
+security and access control via <code class="code code-class">SecurityID</code>,
+a easy to use cli system via <code class="code code-class">Console</code>,
+flexible migration system via the <code class="code code-class">pdx</code>
+command, and much more...
+
+<p>The code is clean and easy to read, verifiable, self contained and
+replacable.</p>
+
+<p>The project is <a href="https://github.com/freialib">hosted on GitHub</a>.
+You can report bugs and discuss features on the issue pages. Feel free to also
+send tweets on <a href="https://twitter.com/">twitter</a> using the hashtag
+<code>#freialib</code>, or post questions on
+<a href="http://stackoverflow.com/">stackoverflow</a> using the
+<code>freialib</code> tag.</p>
+
+<p>The freia library is distributed under a <b>BSD 2-clause license</b>.
+<br/><small>See <a href="#doc-license">License</a> section for more
+information.</small></p>
+
+<p><i><b>The freia library is currently still in early development</b>,
+everything that goes in it is planned and a lot of it's code is consolidation
+and of tooling of code the authors have already written. Things are still being
+documented, tests written/moved/etc. The prototype version (v0.0.0) is
+available if you wish to take a look at it. Code will be split up into
+independent modules; for easy refactoring the code is currently in a single
+repo at this stage in development.</i></p>
+
+<h2 id="doc-using">Installing</h2>
+
+<h3>Existing Codebase</h3>
+<p>If you have an existing codebase the way you include freia is hugely
+dependent on your circumstances. We recomend reading the
+<a href="#freia">freia Module</a> docs. After you understand the
+requirements for <a href="#doc-freia-autoloading">autoloading</a> and
+<a href="#doc-freia-init">initialization</a> you should have a good idea
+what you need to do in your project to integrate freia.</p>
+
+<h3>Fresh Start</h3>
+
+<p>The recomended method to get the freia library is via
+<a href="https://getcomposer.org/">composer</a>. We recomend keeping the
+<code>composer.lock</code> file and also commiting all the files to your
+version control system rather then rely on re-downloading each time. It is much
+more reliable to rely on the servers your code base is on then several servers
+all over the internet, any of which can go down and break your project.</p>
+
+<p>It is prefered to not rely on composer on the server side, which isn't a
+problem even if you want to clone to your server if you simply commit all your
+dependencies into your revision control system.</p>
+
+<h4>Minimal version</h4>
+
+<pre><code class="json">{
+	"autoload": {
+		"freia": {
+			"load": [ "system", "linker", "vendor" ]
+		}
+	},
+	"require": {
+		"php": ">=5.4.10",
+		"freia": "~1.0",
+		"hlin/archetype": "~1.0",
+		"hlin/attribute": "~1.0",
+		"hlin/tools": "~1.0"
+	}
+}</code></pre>
+
+<h4>All modules</h4>
+
+<pre><code class="json">{
+	"autoload": {
+		"freia": {
+			"load": [ "system", "linker", "vendor" ]
+		}
+	},
+	"require": {
+		"php": ">=5.4.10",
+		"freia": "~1.0",
+		"hlin/archetype": "~1.0",
+		"hlin/attribute": "~1.0",
+		"hlin/tools": "~1.0",
+		"fenrir/system": "~1.0",
+		"fenrir/tools": "~1.0"
+	}
+}</code></pre>
+
+<h4>Basic framework for getting started</h4>
+
+<p>We provide a basic framework if you start from a completely blank
+slate to help you get going. We do recomend people make their own project
+structure from scratch to get the most benefit by avoiding any unncesary
+clutter that a generic structure might impose, but if you're in a hurry or need
+a reference point here you go:</p>
+
+<pre><code class="vdr / no-highlight">composer create-project --prefer-dist freialib/framework YOUR_PROJECT/ "~1.0"
+cd YOUR_PROJECT/1.0
+git init
+git add -A
+git commit -m "base"</code></pre>
+
+<p>If you don't have the composer command run the following to get it:</p>
+
+<pre><code class="vdr / no-highlight">curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer</code></pre>
+
+<h2 id="doc-license">License</h2>
+
+<p>The freia library is distributed using a
+<a href="http://en.wikipedia.org/wiki/BSD_licenses">BSD 2-clause license</a>.
+You can find the license text in the <a href="/license.txt">license.txt</a>
+file. The BSD 2-clause license allows you to use freia for both open source and
+commercial projects with little to no restrictions; mainly you just need to
+maintain the license text in the files, even if you make modifications to the
+files in question.</p>
+
+<h2 id="doc-foreword">Foreword</h2>
+
+<p>This document is the entire freia documentation, the official documention,
+and the main and only format of the docs.</p>
+
+<p>We are intentionally avoiding a printable and automatically generated
+versions due to the complexity that introduces both to maintaining the docs,
+writing the docs, contributing to the docs, the organization of the docs, as
+well as the complexity it adds to the code. We don't believe extremly long
+blocks of documentation in code to be all that useful to
+inline auto-complete.</p>
+
+<p>If you wish to correct or add anything to this document simply go to the
+<a href="https://github.com/freialib/freialib.github.io/blob/master/index.html">file
+of this document on the site's github repo</a> and press the <code>Edit</code>
+button. You will need a <a href="https://github.com/">free Github account</a>.
+Github will magically create a copy of the repo and file (fork), and allow you
+put your changes into a patch which you can send back to us to integrate (pull
+request).</p>
+
+<p>The documentation is organized into topics and modules. Modules have
+have concepts and classes organized in sub-namespaces. Sub-namespaces may be
+organized into categories when relevant (the category will be in
+paranthesis).</p>
+
+<div class="toc">
+	<div class="toc-Title"><a href="#">Topic 1</a></div>
+	<div class="toc-Title"><a href="#">Topic 2</a></div>
+	<div class="toc-Title"><a href="#">namespace Module</a></div>
+	<ol>
+		<li><a class="toc-Entry" href="#">Concept 1</a></li>
+		<li>
+			<a class="toc-Entry" href="#">Concept 2</a>
+			<ul>
+				<li><a class="toc-Entry" href="#">Concept 2.1</a></li>
+				<li><a class="toc-Entry" href="#">Concept 2.2</a></li>
+				<li><a class="toc-Entry" href="#">Concept 2.3</a></li>
+			</ul>
+		</li>
+		<li><a class="toc-Entry" href="#">Concept 3</a></li>
+	</ol>
+	<p class="toc-Subtitle">subnamespace</p>
+	<ul>
+		<li><a class="toc-Entry" href="#">Class 1</a></li>
+		<li><a class="toc-Entry" href="#">Class 2</a></li>
+	</ul>
+	<p class="toc-Subtitle">subnamespace (category)</p>
+	<ul>
+		<li><a class="toc-Entry" href="#">Class 3</a></li>
+		<li><a class="toc-Entry" href="#">Class 4</a></li>
+	</ul>
+</div>
+
+<p>We try to conver everything, but we do not try to cover everything
+systematically. This may seem strange, but we have a lot of details in the way
+things are implemented, convering things one by one is actually a lot more
+confusing then presenting the concept, ie. the problem space it was designed
+to solve.</p>
+
+<p>In this document we use universal namespace notation to refer both classes
+and namespaces and combinations there of. As an example
+<code>\hlin\archetype\Context</code> is written as
+<code>hlin.archetype.Context</code> which is also the format that's used and
+recomended for configuration files since it avoids confusing escaping of the
+<code>\</code> character.</p>
+
+<h2 id="freia"><code>freia</code> Module</h2>
+
+<p>The freia module consists of only the main <code>freia</code> namespace. To
+allow for working with composer the module is written in a
+<a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a> format.</p>
+
+<p>All other modules in the library are defined as
+<code>freia-cfs-module</code>s.</p>
+
+<p>The namespace actually only really contains one class
+<code>freia.SymbolLoader</code> that's independent, the other utility classes
+contained within, outside of <code>freia.Panic</code> which is a conventions
+requirement (see: <a href="#doc-freia-errors">exceptions &amp; errors</a>),
+actually require the autoloader to be active for the dependencies to resolve
+(mainly interface dependencies).</p>
+
+<h3 id="doc-freia-autoloading">Autoloading</h3>
+
+<p><code>fenrir.SymbolLoader</code> is the class you should be looking when
+trying to initialized the autoloader. The class <code>fenrir.Autoloader</code>
+is intended for use in contexts where the archetype is required. You can not
+initialize it with out having <code>fenrir.SymbolLoader</code> already
+initialized.</p>
+
+<p>Simple autoloader initialization:</p>
+
+<pre><code class="php">&lt;?php namespace appname\main;
+
+/**
+ * @return \hlin\archetype\Autoloader
+ */
+function autoloader($syspath) {
+
+	// paths where to search for freia modules (relative to $syspath)
+	$paths = ['system', 'vendor'];
+
+	// include composer autoloader
+	require "$syspath/vendor/autoload.php";
+
+	// initialize
+	$autoloader = \freia\SymbolLoader::instance($syspath, $paths);
+
+	// add as main autoloader
+	$is_registered = $autoloader->register(true);
+
+	// fulfill archetype contract before returning
+	return \freia\Autoloader::wrap($autoloader);
+}</code></pre>
+
+<p>We recomend storing the paths configuration in your
+<code>composer.json</code>. Building on the above example you can just change
+<code>$paths</code> as follows to configure modules via your
+<code>composer.json</code> configuration:</p>
+
+<pre><code class="php">&lt;?php namespace appname\main;
+
+	// ...
+
+	$composerjson = "$syspath/composer.json";
+	file_exists($composerjson) or die(" Err: missing composer.json\n");
+	$env = json_decode(file_get_contents($composerjson), true);
+	$paths = $env['autoload']['freia'];
+
+	// ...
+
+</code></pre>
+
+<h4>Class Name Conventions</h4>
+
+<p>Classes written in freia modules follow the following conventions:</p>
+<ul>
+	<li>given multiple words in a CamelCase classname the last word, and last
+	    word only, is converted to a directory and the classname with out the
+	    last word in it is used as the file name</li>
+	<li>in resolution, if only the first segment of a namespace is provided the
+	    class will resolve to the top class with the segment as the main
+	    namespace or the first subnamespace in cases of foreign namespaces</li>
+	<li>whenever a namespace ends with <code>next\&lt;namespace&gt;</code> the
+	    class will resolve to the first class in the namespace after the
+	    current module in the stack that has the class in the namespace after
+	    <code>next</code></li>
+	<li>we recognize php is case insensitive but calling classes from freia
+	    modules using the wrong case will result in undefined behavior (will
+	    work if it was previously loaded, or on window, fail otherwise due to
+	    file mapping)</li>
+</ul>
+
+<p>As an optional requirement, which we do not impose, we recomend namespaces
+be lowercase letters (using <code>\</code> to seperate words) and not be used
+as an extention of class names (eg. <code>appname.Controllers.Home</code> would
+be incorect under the recomendation). Please keep all the information within
+the class name and use the namespace purely as a "name workspace."</p>
+
+<p>With regard to class names being case sensitive, in part this is a
+restriction inherited from compatibility with composer, but that aside in
+practice we find it's fairly easy and desirable to keep classes case sensitive.
+Code is more consistent and as a bonus file names of classes using camel case
+are readable, as opposed to the being a amalgam of lowercase words which would
+happen if we had made it case insensitive.</p>
+
+<h5>Examples of the first rule</h5>
+<pre><code class="php">// Controller_Home.php
+class Controller_Home</code></pre>
+<pre><code class="php">// Controller/Home.php
+class HomeController</code></pre>
+<pre><code class="php">// Command/Example.php
+class ExampleCommand</code></pre>
+<pre><code class="php">// Trait/Example.php
+class ExampleTrait</code></pre>
+<pre><code class="php">// Signature/Example.php
+interface ExampleSignature</code></pre>
+<pre><code class="php">// Database/ReallyLongName.php
+class ReallyLongNameDatabase</code></pre>
+
+<h5>Examples of resolution</h5>
+<p>We'll assume the following stack of modules and classes. Remember you can
+use the command line helpers to diagnose the class resolution if you need it;
+in practice it's rarely as complex as the example bellow.</p>
+<pre><code class="vdr / no-highlight">module0.module2
+	class Example1
+
+module1.system.legacysupport
+	class Example1
+module1.system.core
+	class Example1
+	class Example2 extends next\module1\Example1
+module1.tools
+	class Example1
+
+module2.system
+	class Example1
+
+module3.system
+	class Example1
+	class Example3 extends \module1\system\core\Example1
+</code></pre>
+<p><small>In the examples bellow <code>A &lt;- B</code> means <code>A</code>
+extends <code>B</code></small></p>
+<pre><code class="php"># simple resolution (absolute and dynamic)
+# --------------------------------------------------------------------------
+\module1\system\core\Example1 // => module1.system.core.Example1
+\module1\system\Example1 // => module1.system.legacysupport.Example1
+\module1\tools\Example1 // => module1.tools.Example1
+\module1\Example1 // => module1.systen.core.Example1</code></pre>
+
+<pre><code class="php"># overwriting from foreign namespace
+# --------------------------------------------------------------------------
+\module2\system\Example1 // => module2.system.Example1
+\module2\Example1 // => module0.module2.Example1</code></pre>
+
+<pre><code class="php"># infinite blind extention via the "next" keyword
+# --------------------------------------------------------------------------
+\module1\Example2 // => module1.system.Example2 &lt;- module1.tools.Example1</code></pre>
+
+<pre><code class="php"># explicit inheritance
+# --------------------------------------------------------------------------
+\module3\Example3 // => module3.system.Example3 &lt;- module1.system.core.Example1</code></pre>
+<h3 id="doc-freia-init">Initialization</h3>
+
+<p>Settings up the autoloader allows you to use modules, however in freia most
+modules require a context to work with. Things such as logs, file system
+functions, cli functions, web functions, paths are all part of the context
+passed into classes that require them.</p>
+
+<p>Here is a minimalistic initialization block:</p>
+
+<pre><code class="php">&lt;?php namespace appname\main;
+
+use \hlin\archetype\Autoloader;
+
+/**
+ * @return \hlin\archetype\Context
+ */
+function context($syspath, $logspath, Autoloader $autoloader) {
+
+	// php settings
+	date_default_timezone_set('Europe/London');
+
+	// paths
+	$cachepath = realpath("$syspath/cache");
+
+	// paths to obscure in logs
+	$secpaths = ['syspath' => $syspath];
+
+	// logger setup
+	$fs = \fenrir\Filesystem::instance();
+	$logger = \hlin\FileLogger::instance($fs, $logspath, $secpaths);
+
+	// configuration reader
+	$filemap = \freia\Filemap::instance($autoloader);
+	$configs = \freia\Configs::instance($fs, [ $filemap ]);
+
+	// main context
+	$context = \fenrir\Context::instance($fs, $logger, $configs);
+
+	// paths
+	$context->addpath('syspath', $syspath);
+	$context->addpath('logspath', $logspath);
+	$context->addpath('cachepath', $cachepath);
+
+	return $context;
+}</code></pre>
+
+<p>99% of modules will require just the above to function. In some cases
+you may need to add to the above to satisfy the special needs of specialized
+modules; be it extra path constants or just diffrent classes for the
+initialization altogheter.</p>
+
+<p>Here are a few "extra" configuration values as an example:</p>
+
+<pre><code class="php">&lt;?php namespace appname\main;
+
+	// ...
+
+	// versions
+	$pkg = json_decode(file_get_contents("$syspath/composer.json"), true);
+	$mainauthor = $pkg['authors'][0]['name'];
+	$context->addversion($pkg['name'], $pkg['version'], $mainauthor);
+	$context->setmainversion($pkg['name']);
+	$context->addversion('PHP', phpversion(), 'The PHP Group');
+
+	// special handlers
+	$context->filemap_is($filemap);
+	$context->autoloader_is($autoloader);
+
+	// ...
+
+</code></pre>
+
+<h4>Putting it all togheter</h4>
+
+<p>So far we've gone into what code you need for initialization but not really
+how you use it. Let's assume the <code>appname.main.context</code> function
+defined above is in <code>main.context.php</code> and the code illustrated
+in the Autoloader section is in <code>main.autoloader.php</code>. We recomend
+you always use <code>main</code> for the filename of your entry point, and
+place your entry point on the root of the project.</p>
+
+<p>Assuming all files mentioned so far are on the root of your project, here's
+a minimal example of how your entry point might look for a web app:</p>
+
+<h5>main.php</h5>
+<pre><code class="php">&lt;?php namespace appname\main;
+
+/**
+ * ...
+ */
+function main($localconf) {
+
+	$syspath = realpath(__DIR__);
+	$logspath = realpath("$syspath/logs");
+
+	require "$syspath/main.autoloader.php";
+	require "$syspath/main.context.php";
+
+	// init autoloader
+	$autoloader = autoloader($syspath);
+
+	if ($autoloader === null) {
+		error_log("Failed loading autoloader.");
+		return 500;
+	}
+
+	// init main context
+	$context = context($syspath, $logspath, $autoloader);
+
+	// example logic
+	try {
+		$dbconf = $context->confs->read('freia/databases');
+		$mysql = \fenrir\MysqlDatabase::instance($dbconf['appname.mysql']);
+		$http = \fenrir\HttpDispatcher::instance($context);
+
+		require "$syspath/routes/main.php"; # => router function
+		\appname\routes\router($http, $context, $mysql);
+
+		return 0; # success
+	}
+	catch (\Exception $exception) {
+		$context->logger->logexception($exception);
+		return 500;
+	}
+}
+</code></pre>
+<h5>index.php</h5>
+<pre><code class="php">&lt;?php namespace appname\main;
+
+	$wwwpath = realpath(__DIR__);
+	$siteroot = realpath("$wwwpath/..");
+
+	// ignore existing files in PHP build-in server
+	$uri = $_SERVER['REQUEST_URI'];
+	if (strpos($uri, '..') == false) {
+		$req = "$wwwpath/$uri";
+		if (file_exists($req) &amp;&amp; is_file($req)) {
+			return false;
+		}
+	}
+
+	// private keys, server settings and sensitive information
+	$wwwconf = include "$siteroot/conf.php";
+	$wwwconf['wwwpath'] = $wwwpath;
+
+	require "{$wwwconf['syspath']}/main.php";
+
+	// invoke main
+	$exitcode = main($wwwconf);
+
+	// handle system failure
+	if ($exitcode != 0) {
+		$errpage = "$wwwpath/err/$exitcode.html";
+		if (file_exists($errpage)) {
+			http_response_code($exitcode);
+			include $errpage;
+		}
+	}
+</code></pre>
+
+<h5>console</h5>
+
+<p>It's fairly simply to setup other specialized entry points:</p>
+
+<pre><code class="php">#!/usr/bin/env php
+&lt;?php
+
+	$syspath = realpath(__DIR__);
+	$logspath = realpath("$syspath/logs");
+
+	require "$syspath/main.autoloader.php";
+	require "$syspath/main.context.php";
+
+	// init autoloader
+	$autoloader = \appname\main\autoloader($syspath);
+
+	if ($autoloader === null) {
+		die(" Err: Missing dependencies.\n");
+	}
+
+	// init main context
+	$context = \appname\main\context($syspath, $logspath, $autoloader);
+
+	// create console handler
+	$console = \fenrir\Console::instance($context);
+
+	// invoke main
+	$commands = $context->confs->read('freia/commands');
+	return $console->main($commands);
+
+</code></pre>
+<h3 id="doc-freia-defining-a-module">Defining a Module</h3>
+
+<p>A freia module is defined by prividing a namespace (we recomend always
+providing a subnamespace as well) and setting the type to
+<code>freia-module</code> in the <code>composer.json</code> of the module.</p>
+
+<pre><code class="json">{
+	"name": "yournamespace/subnamespace",
+	"type": "freia-module"
+}</code></pre>
+
+<p>The above is the minimum requirement and will work fine if you maintain
+the module only in your version control but if you wish to create a
+distributable module you'll need to add a few more fields to the file, please
+refer to the <a href="https://getcomposer.org/doc/04-schema.md">composer
+schema documentation</a> for all requirements.</p>
+
+<p>There is no mandatory directories in the module structure. Of the directories
+freia only requires <code>src</code> and <code>confs</code>; anything else
+is considered specialized functionality (this includes tests). Here is a module
+example:</p>
+
+<pre><code class="no-highlight">your_module/
+	confs/
+	src/
+	composer.json
+</code></pre>
+
+<h2 id="hlin"><code>hlin</code> Module</h2>
+
+<p>The <code>hlin</code> module specialises in portable and completely testable
+code; unlike the <a href="#fenrir"><code>fenrir</code> module</a> which
+specialises on classes that require deep coupling.</p>
+
+<h3 id="doc-hlin-interfaces">Interfaces</h3>
+
+<p>Interfaces in freia are refered to as "interfaces" only in the writing of
+the implementation, in all other cases interfaces fall under one of
+three categories:</p>
+
+<ul>
+
+	<li><code>archetypes</code> &mdash; concepts intended to be either re-used
+	a lot, or otherwise very useful to standardize to ensure implementations
+	that make use of them are easier to conceptualize by conceptualizing the
+	sum of its parts rather then the whole. In almost all cases, archetypes are
+	located in a specialized namespace, usually
+	<code>&lt;module&gt;/archetype</code>. Archtypes ALWAYS provide traits, and
+	it MANDATORY to use the main trait given, since it allows for dynamic
+	extention. They also <i>sometimes</i> provide <code>Mocks</code>, and
+	<i>sometimes</i> provide <code>TestTraits</code>; in other words all the
+	little building blocks you would need for speedy implementation.</li>
+
+	<li><code>attributes</code> &mdash; a specialized light weight form of
+	archetypes, in general used to denote a class accepts a certain archetype
+	or otherwise has some very minor enhancement to functionality, eg.
+	<code>Contextual</code>, <code>Configurable</code>, etc. Attributes also
+	may provide traits but the traits are not mandatory, unlike archetype
+	traits.</li>
+
+	<li><code>signatures</code> &mdash; are purely method signatures, they
+	serve only to allow different implementations to avoid extending the
+	initial class which is painful most of the time (using adaptors is much
+	more reliable and clean). Signatures are generally just a interface with
+	the <code>ClassName</code> followed by a <code>Signature</code> suffix,
+	eg. <code>ResponseSignature</code>, <code>FlagparserSignature</code>,
+	<code>MysqlDatabseSignature</code>, etc. Signatures generally dont have
+	traits or the traits are not directly tied to the signatures in name.</li>
+
+</ul>
+
+<p>There are of course some minor "DO NOTs"</p>
+
+<ul>
+
+	<li>DO NOT use relative namespaces (interface namespaces are always
+	absolute!), usage of relative namespaces in the context of freia modules
+	is considered "undefined behavior"</li>
+
+	<li>DO NOT have namespaces that only hold signatures, you should
+	have your signatures next to your implementations, if you think of it
+	appropriate to have them in a seperate namespace treat them as attributes
+	or archetypes and implement them as such.</li>
+
+</ul>
+
+<p>And of course a few optional usage recomendations:</p>
+
+<ul>
+	<li>predeclare all namespaces</li>
+	<li>order namespaces and traits as follows: attributes, archetypes, signatures</li>
+</ul>
+
+<h4>usage example</h4>
+
+<pre><code class="php">&lt;?php namespace yourmodule\system;
+
+use \yourmodule\archetype\Example;
+use \hlin\attribute\Contextual;
+use \fenrir\tools\ResponseSignature;
+
+class SimpleExample implements Contextual, Example, ResponseSignature {
+
+	use \hlin\ContextualTrait;
+	use \yourmodule\ExampleTrait;
+
+	// ...
+
+} # class</code></pre>
+
+<h4>declaration example</h4>
+
+<pre><code class="php">&lt;?php namespace yourmodule\archetype;
+
+interface Example</code></pre>
+
+<pre><code class="php">&lt;?php namespace yourmodule\attribute;
+
+interface Example</code></pre>
+
+<pre><code class="php">&lt;?php namespace yourmodule\system;
+
+interface ExampleSignature</code></pre>
+<h3 id="doc-hlin-contexts">Using Contexts</h3>
+
+<p>To make all classes easy to test, self container, including classes in other
+modules not just <code>hlin</code> modules, we employ contexts. What contexts
+do is isolate actions that would have consequences via proxy methods.</p>
+
+<p>In freia you'll generally have to deal with the
+<a href="#hlin-archetype-Filesystem">Filesystem</a> context,
+<a href="#hlin-archetype-CLI">CLI</a> context,
+<a href="#hlin-archetype-Web">Web</a> context, and so on. Since dealing with
+them individually is such a giant pain, and generally tends to just take too
+much implementation time, we recomend you deal with them via the
+all-encompasing master <a href="#hlin-archetype-Context">Context</a> class and
+<a href="#hlin-attribute-Contextual">Contextual attribute</a>, which provide
+you with a single object that contains all the contexts you'll ever need for
+most cases.</p>
+
+<p>Classes that use just the master context are also fairly easy to work with,
+since the master context object is easy to work with in general.</p>
+
+<pre><code class="php">$console = \fenrir\Console::instance($context);
+$commands = $context->confs->read('freia/commands');
+return $console->main($commands);</code></pre>
+
+<p>We believe in the value of terse code. Easier to read is easier to maintain.</p>
+<h3 id="doc-hlin-errors">Exceptions &amp; Errors</h3>
+
+<p>In freia the use <code>SomethingException</code> is discouraged, largely
+because of the confusion the notion of <code>Exception</code> has drawn
+near it.</p>
+
+<p>An exception in freia is defined as literally a more elegant
+<code>die('application logic failed horribly')</code> any other use is
+considered purely bad design. To avoid confusion exception classes are never
+named Exception but instead Panic. This makes their use more intuitive
+as well. Every module/namespace is should create it's own Panic class, ideally
+when throwing a Panic there should be no need for a namespace qualifier since
+the namespace in question has a Panic class.</p>
+
+<h4>Advanced error handling</h4>
+
+<p>When errors that can or "should" be handled happen, ie. errors that are not
+just breaking internal assumtions, then those errors should be handled though
+error codes. If you do not have a clear set of error codes already merely use
+http codes, with 0 as no error (if you wish to use 200 you can have it as
+no error and did something; particularly if you have a function that can
+return literally anything). As far as passing the error codes we recomend the
+multi-return pattern.</p>
+
+<p>In most cases you just need two codes: success and error, and for most cases
+"success" = 0, "error" = anything else (we recomend 500).</p>
+
+<p>Somehow leveraging exceptions may seem "more convenient" but it is actually
+an anti-pattern as it leads to lazily handling everything globally, ie. not
+handling it, just assuming failure. You should have global handlers, however
+you should strive to never have them called, since generically handling an
+error is always far more poor implementation then handling it closest to it's
+location. Handling though exceptions also has the issue of leading to ambigous
+error handling: if X enters an error state, who is responsible for handling it?
+the caller might not be, the caller's caller might not be either, we can assume
+the global error handler will catch it and handle it but it can very well be
+caught anywhere between; there's also no responsibility of knowing it can
+happen much less mitigating it. By handling the error as a return you ensure
+the error propagation is clear and every step takes responsibility leading to
+much more sane and predictable system as a whole.</p>
+
+<h5>implementation pattern I</h5>
+<p>Using <code>null</code> as "no result marker."</p>
+<pre><code class="php">// no result, success
+return [null, 0];
+
+// no result, success
+return [$res, 0];
+
+// no result, failure
+return [null, 500];
+
+// failure with message
+return ["error message", 500];
+
+// no result failure with complex message
+return [$errorObject, 500];
+
+// different failure
+return [$error, 404];
+
+// guess what failure this is...
+return [$error, 401];
+
+// how about this one?
+return [$error, 400];
+</code></pre>
+
+<pre><code class="php">// get result and error
+list($res, $err) = $example->mymethod();
+
+// get only error
+list(, $err) = $example->mymethod();</code></pre>
+
+<h5>implementation pattern II</h5>
+<p>Slight variation of above, allows for <code>null</code> as valid result.</p>
+<pre><code class="php">// success (null here is just a placeholder, any value can be used)
+return [null, 0];
+
+// we got a result (it's null), success
+return [null, 200];
+
+// etc
+</code></pre>
+
+<h5>implementation pattern III</h5>
+<p>No return value? You should still use the same pattern and return
+<code>null</code>. By doing this you can always add a value and there won't be
+any change required to existing code since the pattern will just naturally flow
+into pattern I and II.</p>
+
+<pre><code class="php">// success
+return [null, 0];
+// failure
+return [$error, 500];</code></pre>
+
+
+	<h3 id="hlin-archetype-Context">
+		<code>hlin.archetype.Context</code>
+	</h3>
+	<p>A context is an archetype that's used to encapsulate system classes, such as
+a <a href="#hlin-archetype-Filesystem">Filesystem</a>,
+<a href="#hlin-archetype-Configs">Configs</a> handlers,
+<a href="#hlin-archetype-Web">Web</a> handlers, etc. To facilitate access
+the traits for the archetype used public attributes. The archetype doesn't
+contain much outside of setters and getters to system classes.</p>
+
+<p>The class also serves to maintain paths, versions and other
+misc functionality.</p>
+
+<p>You can easily create classes that accept a context via the
+<a href="#hlin-attribute-Contextual">Contextual</a> attribute.</p>
+
+<pre><code class="php">$context->confs // => \hlin\archetype\Configs
+$context->cli // => \hlin\archetype\CLI
+$context->fs // => \hlin\archetype\Filesystem
+$context->web // => \hlin\archetype\Web
+$context->logger // => \hlin\archetype\Logger
+// etc
+</code></pre>
+<pre><code class="php">$context->cli_is($cli)
+$context->fs_is($fs)
+$context->web_is($web)
+$context->logger_is($logger)</code></pre>
+<pre><code class="php">$context->addpath('example', '/example/path');
+$context->path('example'); // => /example/path</code></pre>
+	<h3 id="hlin-archetype-Filesystem">
+		<code>hlin.archetype.Filesystem</code>
+	</h3>
+	<p>The archetype is used for accessing filesystem related functions. Almost
+all functions have the same signature as the equivalent PHP function with the
+same name. You wish to use the Filesystem version to allow for testing which
+is useful for overwriting and testing. You'll generally almost always use it
+via a <code>Context</code> object.</p>
+
+<pre><code class="php">$fs->file_exists($filename);
+$fs->unlink($filename);
+$fs->chmod($filename, $mode);
+$fs->copy($source, $dest);
+$fs->file_get_contents($filename);
+$fs->file_put_contents($filename, $data);
+$fs->file_append_contents($filename, $data);
+$fs->filemtime($filename);
+$fs->is_readable($filename);
+$fs->mkdir($filename, $mode, $recursive);
+$fs->realpath($path);
+$fs->scandir($directory);
+// etc
+</code></pre>
+
+<p>You may use <code>FilesystemMock</code> when writing tests.</p>
+
+<p><small>See <a href="#hlin-attribute-Contextual">Contextual</a> archetype for
+help on using contexts.</small></p>
+	<h3 id="hlin-archetype-Configs">
+		<code>hlin.archetype.Configs</code>
+	</h3>
+	<p>The archetype is used for reading configuration values; primarily using the
+<code>read</code> method. You'll generally almost always use it via a
+<code>Context</code> object. See
+<a href="#hlin-attribute-Contextual">Contextual</a> archetype for help
+on using contexts.</p>
+
+<pre><code class="php">$confs->read('your/configuration');</code></pre>
+	<h3 id="hlin-archetype-CLI">
+		<code>hlin.archetype.CLI</code>
+	</h3>
+	<p>The archetype is used for cli related functions. You'll generally almost
+always use it via a <code>Context</code> object. See
+<a href="#hlin-attribute-Contextual">Contextual</a> archetype for help
+on using contexts.</p>
+
+<pre><code class="php">$cli->passthru($command);
+$cli->system($command);
+$cli->exec($command);
+$cli->printf($message);
+$input = $cli->fgets();</code></pre>
+
+<p>There are a few specialized methods to assist in creating console
+applications. All fairly explainatory.</p>
+
+<pre><code class="php">$answer = $cli->ask('Continue?', ['Y', 'n']);
+// user answers: Y&lt;EnterKey&gt; => 'Y'
+// user answers: n&lt;EnterKey&gt; => 'n'
+// question will be re-asked until a valid answer is given</code></pre>
+<pre><code class="php">// given: php script.php do:something --flag1 abc flag2
+$cli->args(); // => [ 'php script.php', 'do:something', ... ]
+$cli->syscall(); // => php script.php
+$cli->command(); // => do:something
+$cli->flags(); // => [ '--flag1', 'abc', 'flag2' ]
+</code></pre>
+	<h3 id="hlin-archetype-Web">
+		<code>hlin.archetype.Web</code>
+	</h3>
+	<p>The archetype is used for web related functions. You'll generally almost
+always use it via a <code>Context</code> object. See
+<a href="#hlin-attribute-Contextual">Contextual</a> archetype for help
+on using contexts.</p>
+
+<pre><code class="php">$web->requestMethod();
+$web->requestUri();
+$web->requestBody();
+$web->postData();
+$web->header($header, $replace, $http_response_code);
+$web->http_response_code();
+$web->redirect($url, $type);
+$web->send($contents, $status, $headers);</code></pre>
+	<h3 id="hlin-archetype-Logger">
+		<code>hlin.archetype.Logger</code>
+	</h3>
+	<p>The archetype is used for logging related functions. You'll generally almost
+always use it via a <code>Context</code> object. See
+<a href="#hlin-attribute-Contextual">Contextual</a> archetype for help
+on using contexts.</p>
+
+<pre><code class="php">$logger->logexception($exception);
+$logger->log($message);
+$logger->var_dump($var);</code></pre>
+	<h3 id="hlin-attribute-Contextual">
+		<code>hlin.attribute.Contextual</code>
+	</h3>
+	<p>The attribute allows you to easily create classes that can accept
+a context. Here is an example:</p>
+
+<pre><code class="php">&lt;?php namespace your\module;
+
+use \hlin\attribute\Contextual;
+
+class Example implements Contextual {
+
+	use \hlin\ContextualTrait;
+
+	/**
+	 * @return static
+	 */
+	static function instance(\hlin\archetype\Context $context) {
+		$i = new static;
+		$i->context_is($context);
+		return $i;
+	}
+
+} # class</code></pre>
+	<h3 id="hlin-attribute-Configurable">
+		<code>hlin.attribute.Configurable</code>
+	</h3>
+	<p>The attribute helps creating classes that accept configurable objects. The
+attribute allows you to create classes that can read configurations but can't
+do much else (presumably intentionally as a constraint on the implementation)</p>
+
+<p>The interface/trait provides the <code>confs_are</code> method along
+with <code>$confs</code> easily accessible attribute in the class.</p>
+
+<pre><code class="php">&lt;?php namespace yourmodule\system;
+
+use \hlin\attribute\Configurable;
+
+class Example implements Configurable {
+
+	use \hlin\ConfigurableTriat;
+
+	// ...
+
+} # class</code></pre>
+	<h3 id="hlin-archetype-Autoloader">
+		<code>hlin.archetype.Autoloader</code>
+	</h3>
+	<p>The Autoloader archetype is purely for wrapping autoloaders for use in a
+standardized way. Some classes may require an autoloader, so it's better if
+they require a standardized interface over requiring an explicit class.</p>
+
+<p>The archetype also helps in imposing requirements and conventions.</p>
+	<h3 id="hlin-archetype-Filemap">
+		<code>hlin.archetype.Filemap</code>
+	</h3>
+	<p>Like the <a href="#hlin-archetype-Autoloader">Autoloader</a> archetye this
+is also specifically meant for wrapping an existing concept for generic
+consumtion, rather then defining any particular type.</p>
+
+<p><small>You are unlikely to have to implement one yourself.</small></p>
+
+<p>In general a file map is a representation of the multi-module file system
+employed in freia. It facilitates reading/merging of configuration, loading
+files, etc.</p>
+	<h3 id="hlin-tools-PHP">
+		<code>hlin.tools.PHP</code>
+	</h3>
+	<p>The <code>PHP</code> class contains php language utilities.</p>
+
+<h4><code>PHP::unn</code></h4>
+
+<p>Convert from PHP Namespace Name to Universal Namespace Name.</p>
+
+<pre><code class="php">\hlin\PHP::unn('\hlin\tools\Text'); // => hlin.tools.Text</code></pre>
+
+<p>In general you'll want to use the <code>PHP::unn</code> when displaying
+signatures as it's a lot clearer to read.</p>
+
+<h4><code>PHP::pnn</code></h4>
+
+<p>Convert from Universal Namespace Name to PHP Namespace Name.</p>
+
+<pre><code class="php">\hlin\PHP::pnn('hlin.tools.Text'); // => \hlin\tools\Text</code></pre>
+
+<p>It's recomended to use universal names in configuration files. Simply use
+this function to convert to PHP namespaces that can be invoked.</p>
+	<h3 id="hlin-tools-Arr">
+		<code>hlin.tools.Arr</code>
+	</h3>
+	<p>The <code>Arr</code> class contains array utilities. The name is shortened
+due to limitations in the language ("Array" is reserved). The class contains
+only static helpers.</p>
+
+<h4><code>Arr::implode</code></h4>
+
+<p><code>Arr::implode($glue, array $list, callable $manipulator)</code> is used
+as an advanced version of PHP standard <code>implode</code> that allows for
+manipulation of the value. The <code>Arr::implode</code> also has a convenient
+"if <code>false</code> the value from the list is ignored" so it works in both
+filtering and joinging at the same time.</p>
+
+<pre><code class="php">$list = [ 'x' => 10, 'y' => 20, 'z' => 30 ];
+$res = \hlin\Arr::implode(";\n", $list, function ($key, $val) {
+	if ($val == 20) return false;
+	return "$key -> $val";
+});</code></pre>
+<pre><code class="php">x -> 10;
+z -> 30;</code></pre>
+
+<p>The manipulator signature is always <code>($key, $value)</code> (parameter
+names are not important), if you wish to simply "implode on value" please
+consider just using <code>implode</code> with <code>array_map</code>, this will
+save the <code>Arr</code> class needing to be autoloaded; or the
+<code>hlin.tools</code> module as a dependency in general.</p>
+
+<pre><code class="php">$res = implode($glue, array_map(function ($val) {
+	// your code
+}, $list);</code></pre>
+
+<p>If you simply need to implode booleans (as rare as that is) you can
+just use:</p>
+
+<pre><code class="php">$res = implode($glue, array_map(function ($key, $val) {
+	// your code
+}, array_keys($list), $list));</code></pre>
+	<h3 id="hlin-tools-Text">
+		<code>hlin.tools.Text</code>
+	</h3>
+	<p>The <code>Text</code> class contains text manipulation functions. While
+specialized it doesn't not contian functions for advanced concepts such as
+internationalization, only basic helpers (all static).</p>
+
+<h4><code>Text::reindent</code></h4>
+
+<p>The function has the following signature:</p>
+
+<pre><code class="php">Text::reindent
+	(
+		$source,
+		$indent = '',
+		$tabs_to_spaces = 4,
+		$ignore_zero_indent = true
+	)
+</code></pre>
+
+<p><code>$source</code> is your input. <code>$indent</code> is what you want
+as an indent after after normalization. <code>$tabs_to_spaces</code> converts
+tabs to spaces before processing. <code>$ignore_zero_indent</code> specifies if
+lines with no indentation should be ignored when detecting indentation for
+normalization.</p>
+
+<pre><code class="php">$res = \hlin\Text::reindent
+	(
+		'
+			aaa
+				bbb
+					ccc
+				ddd
+			eee
+		',
+		' -&gt; '
+	);</code></pre>
+<pre><code class="no-higlight"> -&gt; aaa
+ -&gt; 	bbb
+ -&gt; 		ccc
+ -&gt; 	ddd
+ -&gt; eee
+</code></pre>
+
+<p><i>function is primarly meant to be used internally</i></p>
+	<h3 id="hlin-tools-Time">
+		<code>hlin.tools.Time</code>
+	</h3>
+	<p>The <code>Time</code> class contains date and time manipulation
+functions.</p>
+
+<h4><code>Time::timezoneOffset</code></h4>
+
+<p>This helper simply returns the numeric offset of the timezone given; DST will
+affect the result.</p>
+
+<pre><code class="php">\hlin\Time::timezoneOffset('America/New_York'); // => -4:00
+\hlin\Time::timezoneOffset('Etc/Universal'); // => +0:00
+\hlin\Time::timezoneOffset('Europe/London'); // => +1:00</code></pre>
+
+<p><i>function is primarly meant to be used internally</i></p>
+
+<h2 id="fenrir"><code>fenrir</code> Module</h2>
+
+<h3 id="doc-fenrir-console">Using the Console</h3>
+
+<h4 id="doc-fenrir-command">Creating Commands</h4>
+<h4 id="doc-fenrir-help-commands">Help Commands</h4>
+<h4 id="doc-fenrir-honeypot">Honeypot Command</h4>
+<h4 id="doc-fenrir-make">Make Command</h4>
+<h4 id="doc-fenrir-other-commands">Other Commands</h4>
+
+
+	<h3 id="fenrir-system-MysqlDatabase">
+		<code>fenrir.system.MysqlDatabase</code> class
+	</h3>
+		<h3 id="fenrir-tools-Console">
+		<code>fenrir.tools.Console</code> class
+	</h3>
+		<h3 id="fenrir-tools-Pdx">
+		<code>fenrir.tools.Pdx</code> class
+	</h3>
+	
+<h2 id="doc-changelog">Major Changes</h2>
+
+<p><i>Nothing in this section at the moment. Check back later.</i></p>
 		</div>
+
 	</div>
 
-	<div class="window-Nav">
+	<div class="window-Nav" id="toc">
 		<div class="window-Navhead">
 			Table of Contents
 		</div>
 		<div class="window-Navbody">
 			<div class="keyinfo">
 				<span class="keyinfo-Lead">
-					<i class="fa fa-download"></i>
-					<s><a href="#">Get Freia</a> <span class="keyinfo-Version">v0.0.0</span></s>
+					<i class="icon-download"></i> <a href="https://github.com/freialib/prototype/archive/master.zip">Get Freia</a> <span class="keyinfo-Version">v0.0.0</span>
 				</span>
 				<ul>
-					<li><s><i class="fa fa-book"></i> <a href="#getting-started">Getting Started</a></s></li>
-					<li><s><i class="fa fa-heart"></i> <a href="#contributing">Contributing</a></s></li>
-					<li><s><i class="fa fa-history"></i> <a href="#">History</a></s></li>
-					<li><i class="fa fa-github"></i> <a href="https://github.com/freialib">Github</a></li>
+					<li><i class="icon-hammer"></i> <a href="/license.txt">BSD 2-clause License</a></li>
+					<li><i class="icon-github"></i> <a href="https://github.com/freialib">Github Repository</a></li>
+					<li><i class="icon-twitter"></i> <a href="https://twitter.com/search?f=realtime&amp;q=%23freialib">Twitter <code>#freialib</code></a></li>
+					<li><i class="icon-stackexchange"></i> <a href="http://stackoverflow.com/search?q=%23freialib">Ask the community</a></li>
 				</ul>
+			</div>
+			<div class="toc">
+					<div class="toc-Title"><a href="#doc-intro">Introduction</a></div>
+	<div class="toc-Title"><a href="#doc-using">Installing</a></div>
+	<div class="toc-Title"><a href="#doc-license">License</a></div>
+	<div class="toc-Title"><a href="#doc-foreword">Foreword</a></div>
+
+	<div class="toc-Title"><a href="#freia">freia Module</a></div>
+	<ol>
+		<li><a class="toc-Entry" href="#doc-freia-autoloading">Autoloading</a></li>
+		<li><a class="toc-Entry" href="#doc-freia-init">Initialization</a></li>
+		<li><a class="toc-Entry" href="#doc-freia-defining-a-module">Defining a Module</a></li>
+	</ol>
+
+
+	<div class="toc-Title"><a href="#hlin">hlin Module</a></div>
+	<ol>
+		<li><a class="toc-Entry" href="#doc-hlin-interfaces">Interfaces</a></li>
+		<li><a class="toc-Entry" href="#doc-hlin-contexts">Using Contexts</a></li>
+		<li><a class="toc-Entry" href="#doc-hlin-errors">Exceptions &amp; Errors</a></li>
+	</ol>
+	<p class="toc-Subtitle">archetype (context related)</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-archetype-Context">Context</a></li>
+		<li><a class="toc-Entry" href="#hlin-archetype-Filesystem">Filesystem</a></li>
+		<li><a class="toc-Entry" href="#hlin-archetype-Configs">Configs</a></li>
+		<li><a class="toc-Entry" href="#hlin-archetype-CLI">CLI</a></li>
+		<li><a class="toc-Entry" href="#hlin-archetype-Web">Web</a></li>
+		<li><a class="toc-Entry" href="#hlin-archetype-Logger">Logger</a></li>
+	</ul>
+	<p class="toc-Subtitle">attribute</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-attribute-Contextual">Contextual</a></li>
+		<li><a class="toc-Entry" href="#hlin-attribute-Configurable">Configurable</a></li>
+	</ul>
+	<p class="toc-Subtitle">archetype (freia)</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-archetype-Autoloader">Autoloader</a></li>
+		<li><a class="toc-Entry" href="#hlin-archetype-Filemap">Filemap</a></li>
+	</ul>
+
+	<p class="toc-Subtitle">tools</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-tools-PHP">PHP</a></li>
+		<li><a class="toc-Entry" href="#hlin-tools-Arr">Arr</a></li>
+		<li><a class="toc-Entry" href="#hlin-tools-Text">Text</a></li>
+		<li><a class="toc-Entry" href="#hlin-tools-Time">Time</a></li>
+	</ul>
+
+
+	<div class="toc-Title"><a href="#fenrir">fenrir Module</a></div>
+	<ol>
+		<li>
+			<a class="toc-Entry" href="#doc-fenrir-console">Using the Console</a>
+			<ul>
+				<li><a class="toc-Entry" href="#doc-fenrir-command">Creating Commands</a></li>
+				<li><a class="toc-Entry" href="#doc-fenrir-help-commands">Help Commands</a></li>
+				<li><a class="toc-Entry" href="#doc-fenrir-honeypot">Honeypot Command</a></li>
+				<li><a class="toc-Entry" href="#doc-fenrir-make">Make Command</a></li>
+				<li><a class="toc-Entry" href="#doc-fenrir-other-commands">Other Commands</a></li>
+			</ul>
+		</li>
+		<li><a class="toc-Entry" href="#doc-fenrir-pdx">Paradox Migrations</a></li>
+		<li><a class="toc-Entry" href="#doc-fenrir-routing">Routing</a></li>
+	</ol>
+	<p class="toc-Subtitle">system</p>
+	<ul>
+		<li><a class="toc-Entry" href="#fenrir-system-MysqlDatabase">MysqlDatabase</a></li>
+	</ul>
+	<p class="toc-Subtitle">tools</p>
+	<ul>
+		<li><a class="toc-Entry" href="#fenrir-tools-Console">Console</a></li>
+		<li><a class="toc-Entry" href="#fenrir-tools-Console">Pdx</a></li>
+	</ul>
+
+	<div class="toc-Title"><a href="#doc-changelog">Major Changes</a></div>
 			</div>
 		</div>
 	</div>
 
 </div>
+
+
+<style type="text/css"> @import 'web/main.css'; </style>
+<script async src="web/main.js"></script>
