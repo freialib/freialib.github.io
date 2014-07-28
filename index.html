@@ -815,6 +815,183 @@ into pattern I and II.</p>
 return [null, 0];
 // failure
 return [$error, 500];</code></pre>
+<h3 id="doc-hlin-console">Using the Console</h3>
+
+<p>A simple console helper is provided by default. To create a basic
+<code>console</code> script you would write the following code,
+minimal example:</p>
+
+<pre><code class="php">#!/usr/bin/env php
+&lt;?php namespace your_namespace\main;
+
+	// php settings
+	date_default_timezone_set('Europe/London');
+
+	$syspath = realpath(__DIR__);
+	$logspath = realpath("$syspath/logs");
+
+	require "$syspath/autoloader.php";
+	$autoloader = autoloader($syspath);
+
+	if ($autoloader === null) {
+		die('Err: failed to initialize autoloader')
+	}
+
+	require "$syspath/context.php";
+	$context = context($syspath, $logspath, $autoloader);
+
+	$console = \hlin\Console::instance($context);
+	$commands = $context->confs->read('freia/commands');
+	exit($console->main($commands));</code></pre>
+
+<p>Invoking from the command line is fairly simple.</p>
+
+<pre><code class="unix">$ cd path/to/console
+# simple invokation
+$ ./console
+# you can also just invoke from outside (we'll assume parent is server/)
+$ cd ..
+$ server/console</code></pre>
+
+<p>It's important to note that by default the library does not provide any
+sophisticated flag parsing; it's a lot more flexible that way and command
+parameters tend to be both simpler and easier to implement.</p>
+
+<h4 id="doc-hlin-creating-commands">Creating Commands</h4>
+
+<p>To create a command you simply need to do two things:</p>
+
+<ul>
+	<li>write the class that implements <code>hlin.archetype.Command</code></li>
+	<li>write the configuration for the command</li>
+</ul>
+
+<p>Writing the class should be fairly straight forward. You can have any name
+and place it anywhere but we do recomend ending with the Command suffix if at
+all possible.</p>
+
+<pre><code class="php">&lt;?php namespace your_namespace\tools;
+
+class ExampleCommand implements \hlin\archetype\Command {
+
+	use \hlin\CommandTrait;
+
+	/**
+	 * @return int
+	 */
+	function main(array $args = null) {
+
+		// ...
+
+		return 0; # success
+	}
+
+} # class</code></pre>
+
+<p>There is no convention for where to place the configuration for commands,
+but obviously if you place it somewhere else you'll have to specify it, merge
+it, convert it, etc to get to the <code>$commands</code> variable we got to
+in the previous section. If you just wish to keep it simple and stupid just
+place it under a <code>freia/commands</code> configuration file in ANY module
+of your choice; you may create a file if the module doesn't have it.</p>
+
+<h5>verbose &amp; complete command configuration</h5>
+
+<pre><code class="php">&lt;?php return array
+	(
+		'make' => array
+			(
+				'topic' => 'fenrir.tools',
+				'command' => 'fenrir.MakeCommand',
+				'flagparser' => 'hlin.NoopFlagparser',
+				'summary' => 'make a class, or just about anything else',
+				'desc' =>
+					"The make command will try to figure out what you want to make and create it as apropriatly as possible. ".
+					"What you pass to it is considered the 'problem' and is what the command is trying to solve. A solution will be presented before executing it.\n\n".
+					"If it's a class it will try to place it in the right namespace, under the right directory structure and have it implement the right interfaces.\n\n".
+					"You can skip the guessing by providing a domain to the problem using the domain:problem syntax. Please see examples for details. ".
+					"Some patterns may always require the domain to work.",
+				'examples' => array
+					(
+						'?' => "Get available domains",
+						'example.FooCommand' => "Create class FooCommand (that implements \hlin\archetype\Command) with namespace example; place it in the file /Command/Foo.php located in the class path for the module specific to namespace example",
+						'class:example.FooCommand' => 'Same as above only we ensure that the problem example.FooCommand is interpreted as a class'
+					),
+				'help' =>
+					" :invokation ?\n\n".
+					"    Get all supported problem domains.\n\n".
+					" :invokation [&lt;domain&gt;:]&lt;problem&gt;\n\n".
+					"    Solve the given problem. Domain is optional.\n".
+					"    If domain is not provided the command will try to guess."
+			),
+
+	); # conf</code></pre>
+
+<h5>minimalistic command configuration aka. lazy</h5>
+
+<pre><code class="php">&lt;?php return array
+	(
+		'make' => array
+			(
+				'topic' => 'fenrir.tools',
+				'command' => 'fenrir.MakeCommand',
+				'summary' => 'make a class, or just about anything else',
+				'examples' => array
+					(
+						'?' => "Get available domains",
+						'example.FooCommand' => "Create class FooCommand (that implements \hlin\archetype\Command) with namespace example; place it in the file /Command/Foo.php located in the class path for the module specific to namespace example",
+						'class:example.FooCommand' => 'Same as above only we ensure that the problem example.FooCommand is interpreted as a class'
+					),
+			),
+
+	); # conf</code></pre>
+<h4 id="doc-hlin-help-commands">Help Commands</h4>
+
+<p>Help commands are fairly straight forward. We'll assume
+<code>./console</code> is your console script, to get general help you just
+invoke:
+
+<pre><code class="unix">$ ./console help
+# or just...
+$ ./console
+# or...
+$ ./console --help
+</code></pre>
+
+<p>You can filter the commands you see by category; the commands with out
+category are refered to as "application commands" and have "application" as
+the category.</p>
+
+<pre><code class="unix"># all commands
+$ ./console help
+# only application commands
+$ ./console help application
+# only fenrir.tools commands
+$ ./console help fenrir.tools</code></pre>
+
+<p>To get help on a command simply use the <code>?</code> command:</p>
+
+<pre><code class="unix">$ ./console ? help
+$ ./console ? pdx
+$ ./console ? make</code></pre>
+<h4 id="doc-hlin-honeypot">Honeypot Command</h4>
+
+<p>The <code>HoneypotCommand</code> allows you to generate autocomplete files
+IDEs can use to "get the correct idea" of what extends what. This both helps
+in providing accurate autocomplete information as well as avoiding annoying
+"this class must be declared abstract" false positives.</p>
+
+<pre><code class="unix"># regenerate all honeypots
+$ ./console honeypot</code></pre>
+
+<p>Some IDEs (notably netbeans) are slow to process. You may need to both
+wait a few seconds and/or open the honeypot files.</p>
+
+<p>If you have improper implementation honeypot generation will throw errors
+on the console; please fix those errors; there is no bypassing. Generally
+these are 99% of the time: missing method implementation on non-abstract
+classes, bad class declarations, etc. You can think of honeypots as a light
+mini-linter since they force all your files though the pipe.</p>
 
 
 	<h3 id="hlin-archetype-Context">
@@ -938,6 +1115,26 @@ on using contexts.</p>
 <pre><code class="php">$logger->logexception($exception);
 $logger->log($message);
 $logger->var_dump($var);</code></pre>
+	<h3 id="hlin-archetype-Autoloader">
+		<code>hlin.archetype.Autoloader</code>
+	</h3>
+	<p>The Autoloader archetype is purely for wrapping autoloaders for use in a
+standardized way. Some classes may require an autoloader, so it's better if
+they require a standardized interface over requiring an explicit class.</p>
+
+<p>The archetype also helps in imposing requirements and conventions.</p>
+	<h3 id="hlin-archetype-Filemap">
+		<code>hlin.archetype.Filemap</code>
+	</h3>
+	<p>Like the <a href="#hlin-archetype-Autoloader">Autoloader</a> archetye this
+is also specifically meant for wrapping an existing concept for generic
+consumtion, rather then defining any particular type.</p>
+
+<p><small>You are unlikely to have to implement one yourself.</small></p>
+
+<p>In general a file map is a representation of the multi-module file system
+employed in freia. It facilitates reading/merging of configuration, loading
+files, etc.</p>
 	<h3 id="hlin-attribute-Contextual">
 		<code>hlin.attribute.Contextual</code>
 	</h3>
@@ -983,26 +1180,81 @@ class Example implements Configurable {
 	// ...
 
 } # class</code></pre>
-	<h3 id="hlin-archetype-Autoloader">
-		<code>hlin.archetype.Autoloader</code>
+	<h3 id="hlin-tools-FileLogger">
+		<code>hlin.tools.FileLogger</code>
 	</h3>
-	<p>The Autoloader archetype is purely for wrapping autoloaders for use in a
-standardized way. Some classes may require an autoloader, so it's better if
-they require a standardized interface over requiring an explicit class.</p>
+	<p>A file logger is the most basic type of logger (aside from
+<a href="#hlin-tools-NoopLogger">NoopLogger</a> which does nothing). To
+instantiate one you only need a
+<a href="#hlin-archetype-Filesystem">Filesystem</a> context and logs path.</p>
 
-<p>The archetype also helps in imposing requirements and conventions.</p>
-	<h3 id="hlin-archetype-Filemap">
-		<code>hlin.archetype.Filemap</code>
+<pre><code class="php">$logspath = realpath("$syspath/logs");
+$fs = \fenrir\Filesystem::instance();
+$logger = \hlin\FileLogger::instance($fs, $logspath);</code></pre>
+
+<p>Generally this will happen in your <a href="#doc-freia-init">main context
+initialization block</a>.</p>
+
+<p>You can optionally pass a strings array for "beclouding." The strings will
+be replaced inside the logs both for bravety and clarity, as well as
+security concerns. In general the strings are merely frequently used paths.</p>
+
+<pre><code class="php">$logger = \hlin\FileLogger::instance($fs, $logspath, ['syspath' => ]);</code></pre>
+
+
+	<h3 id="hlin-tools-NoopLogger">
+		<code>hlin.tools.NoopLogger</code>
 	</h3>
-	<p>Like the <a href="#hlin-archetype-Autoloader">Autoloader</a> archetye this
-is also specifically meant for wrapping an existing concept for generic
-consumtion, rather then defining any particular type.</p>
+	<p>As the name implies a logger that does nothing. Generally invoked by normal
+loggers that "do something" when they fail catestrophically due to permission
+errors or otherwise, by returning a <code>NoopLogger</code> they ensure the
+system itself doesn't have to enter an error state due to logging failing.</p>
 
-<p><small>You are unlikely to have to implement one yourself.</small></p>
+<pre><code class="php">$do_nothing_logger = \hlin\NoopLogger::instance();</code></pre>
+	<h3 id="hlin-tools-Request">
+		<code>hlin.tools.Request</code>
+	</h3>
+	<p>A request object is a wrapper on the elements of a request; which is to
+say it isolates the handler that accepts a <code>Request</code> object from
+the current real state of, in many cases, what would be the <code>Web</code>
+context.</p>
 
-<p>In general a file map is a representation of the multi-module file system
-employed in freia. It facilitates reading/merging of configuration, loading
-files, etc.</p>
+<pre><code class="php">$req->requestUri(); // => '/threads/12'
+$req->param('thread') // => '12'
+$req->requestMethod(); // => post
+$req->input(['json'], 'array'); // => [ 'id' => '1234' ]
+
+// etc</code></pre>
+	<h3 id="hlin-tools-Response">
+		<code>hlin.tools.Response</code>
+	</h3>
+	<p>A response object is used to delay the response until the very last seconds,
+essentially it avoids working directly with, what is many cases, the
+<code>Web</code> context. By doing so if any error occurs there is no nasty
+errors such as "headers already sent" or similar and the system can gracefully
+recover; or at least has a chance to.</p>
+
+<pre><code class="php">$res->responseCode(200);
+$res->header('Content-Type: text/plain');
+$res->redirect('/login', 303);</code></pre>
+
+<p>The class also helps with encapsulating logic. Instead of injecting your
+logic in every control handler you can simply specify the logic on the
+response wrapper and have all handlers just pass in input and/or configuration.</p>
+
+<pre><code class="php">$res->logic(function ($input, $conf) { ... });
+
+// ...
+
+$controller = function ($req, $res) {
+	$res->conf('example');
+	return [ 'message' => 'hello, world' ];
+};
+
+// ...
+
+$raw_output = $controller($req, $res);
+$res->parse($raw_output);</code></pre>
 	<h3 id="hlin-tools-PHP">
 		<code>hlin.tools.PHP</code>
 	</h3>
@@ -1128,23 +1380,18 @@ affect the result.</p>
 
 <h2 id="fenrir"><code>fenrir</code> Module</h2>
 
-<h3 id="doc-fenrir-console">Using the Console</h3>
+<p>The <code>fenrir</code> module specilizes in coupled code, either literally
+(explicit language such as SQL, explicit dependencies such as PHP or vendor
+libraries) or in the abstract sense (explicit technologies, explicit use cases,
+non-portable techniques).</p>
 
-<h4 id="doc-fenrir-command">Creating Commands</h4>
-<h4 id="doc-fenrir-help-commands">Help Commands</h4>
-<h4 id="doc-fenrir-honeypot">Honeypot Command</h4>
-<h4 id="doc-fenrir-make">Make Command</h4>
-<h4 id="doc-fenrir-other-commands">Other Commands</h4>
 
 
 	<h3 id="fenrir-system-MysqlDatabase">
 		<code>fenrir.system.MysqlDatabase</code> class
 	</h3>
-		<h3 id="fenrir-tools-Console">
-		<code>fenrir.tools.Console</code> class
-	</h3>
-		<h3 id="fenrir-tools-Pdx">
-		<code>fenrir.tools.Pdx</code> class
+		<h3 id="fenrir-tools-MakeCommand">
+		<code>fenrir.tools.MakeCommand</code> class
 	</h3>
 	
 <h2 id="doc-changelog">Major Changes</h2>
@@ -1189,6 +1436,14 @@ affect the result.</p>
 		<li><a class="toc-Entry" href="#doc-hlin-interfaces">Interfaces</a></li>
 		<li><a class="toc-Entry" href="#doc-hlin-contexts">Using Contexts</a></li>
 		<li><a class="toc-Entry" href="#doc-hlin-errors">Exceptions &amp; Errors</a></li>
+		<li>
+			<a class="toc-Entry" href="#doc-hlin-console">Using the Console</a>
+			<ul>
+				<li><a class="toc-Entry" href="#doc-hlin-creating-commands">Creating Commands</a></li>
+				<li><a class="toc-Entry" href="#doc-hlin-help-commands">Help Commands</a></li>
+				<li><a class="toc-Entry" href="#doc-hlin-honeypot">Honeypot Command</a></li>
+			</ul>
+		</li>
 	</ol>
 	<p class="toc-Subtitle">archetype (context related)</p>
 	<ul>
@@ -1199,18 +1454,28 @@ affect the result.</p>
 		<li><a class="toc-Entry" href="#hlin-archetype-Web">Web</a></li>
 		<li><a class="toc-Entry" href="#hlin-archetype-Logger">Logger</a></li>
 	</ul>
-	<p class="toc-Subtitle">attribute</p>
-	<ul>
-		<li><a class="toc-Entry" href="#hlin-attribute-Contextual">Contextual</a></li>
-		<li><a class="toc-Entry" href="#hlin-attribute-Configurable">Configurable</a></li>
-	</ul>
 	<p class="toc-Subtitle">archetype (freia)</p>
 	<ul>
 		<li><a class="toc-Entry" href="#hlin-archetype-Autoloader">Autoloader</a></li>
 		<li><a class="toc-Entry" href="#hlin-archetype-Filemap">Filemap</a></li>
 	</ul>
 
-	<p class="toc-Subtitle">tools</p>
+	<p class="toc-Subtitle">attribute</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-attribute-Contextual">Contextual</a></li>
+		<li><a class="toc-Entry" href="#hlin-attribute-Configurable">Configurable</a></li>
+	</ul>
+	<p class="toc-Subtitle">tools (logging)</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-tools-FileLogger">FileLogger</a></li>
+		<li><a class="toc-Entry" href="#hlin-tools-NoopLogger">NoopLogger</a></li>
+	</ul>
+	<p class="toc-Subtitle">tools (routing)</p>
+	<ul>
+		<li><a class="toc-Entry" href="#hlin-tools-Request">Request</a></li>
+		<li><a class="toc-Entry" href="#hlin-tools-Response">Response</a></li>
+	</ul>
+	<p class="toc-Subtitle">tools (utils)</p>
 	<ul>
 		<li><a class="toc-Entry" href="#hlin-tools-PHP">PHP</a></li>
 		<li><a class="toc-Entry" href="#hlin-tools-Arr">Arr</a></li>
@@ -1219,18 +1484,9 @@ affect the result.</p>
 	</ul>
 
 
+
 	<div class="toc-Title"><a href="#fenrir">fenrir Module</a></div>
 	<ol>
-		<li>
-			<a class="toc-Entry" href="#doc-fenrir-console">Using the Console</a>
-			<ul>
-				<li><a class="toc-Entry" href="#doc-fenrir-command">Creating Commands</a></li>
-				<li><a class="toc-Entry" href="#doc-fenrir-help-commands">Help Commands</a></li>
-				<li><a class="toc-Entry" href="#doc-fenrir-honeypot">Honeypot Command</a></li>
-				<li><a class="toc-Entry" href="#doc-fenrir-make">Make Command</a></li>
-				<li><a class="toc-Entry" href="#doc-fenrir-other-commands">Other Commands</a></li>
-			</ul>
-		</li>
 		<li><a class="toc-Entry" href="#doc-fenrir-pdx">Paradox Migrations</a></li>
 		<li><a class="toc-Entry" href="#doc-fenrir-routing">Routing</a></li>
 	</ol>
@@ -1238,10 +1494,9 @@ affect the result.</p>
 	<ul>
 		<li><a class="toc-Entry" href="#fenrir-system-MysqlDatabase">MysqlDatabase</a></li>
 	</ul>
-	<p class="toc-Subtitle">tools</p>
+	<p></p>
 	<ul>
-		<li><a class="toc-Entry" href="#fenrir-tools-Console">Console</a></li>
-		<li><a class="toc-Entry" href="#fenrir-tools-Console">Pdx</a></li>
+		<li><a class="toc-Entry" href="#doc-fenrir-MakeCommand">MakeCommand</a></li>
 	</ul>
 
 	<div class="toc-Title"><a href="#doc-changelog">Major Changes</a></div>
