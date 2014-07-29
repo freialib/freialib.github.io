@@ -815,6 +815,113 @@ into pattern I and II.</p>
 return [null, 0];
 // failure
 return [$error, 500];</code></pre>
+<h3 id="doc-hlin-protocols">Authorizer &amp; Protocols</h3>
+
+<p>The prefered way to handle security in freia is though an authorizer
+object. An authorizer allows you to create a programatic access control system
+though the use of <code>Protocol</code> classes. The system is, as mentioned,
+purely programatic, so if you want/need a ACLs you'll just have to hook into
+it and make a protocol that fits your needs. In most cases you don't have to,
+since unless your users need to be able to dynamically change permissions
+it's much much simpler to just have a static configuration for the entire
+system. It's also, much faster.</p>
+
+<p>The system is primarily designed with the following goals in mind:</p>
+
+<ul>
+	<li>extremely fast &mdash; so you can churn out as many checks as you like
+	with out negatively influencing the system</li>
+	<li>extremely flexible &mdash; need to give access to someone only if he's
+	the cousin of one of the employees who are under the project manager that
+	submitted a commit at exactly 6am on a sunday, when there was a blue moon
+	outside? no problem, we got you covered</li>
+	<li>easy to read &mdash; in the interest of keeping your system transparent
+	your internal logic should only contain the question of if someone is able,
+	not the logic of how that test is performed; we help you do that easily</li>
+	<li>no nonsense &mdash; you either were explicity authorizer or the system
+	assumes you don't have access; unless you were explicitly blacklisted in
+	which case tough luck</li>
+</ul>
+
+<p>To get an authorizer object you just need a list of protocols that allow a
+an action, a list of protocols that explicitly forbid an action, a list
+of aliases for roles in the system to help you organize and avoid repeating
+yourself (ie. "an admin is also a member, and therefore has the access rights
+a member has, by consequence") the id of the current user, and the role of the
+current user.</p>
+
+<h4>minimalist example</h4>
+
+<pre><code class="php">$whitelist = include __DIR__."/whitelist.php";
+$blacklist = include __DIR__."/blacklist.php";
+$aliaslist = include __DIR__."/aliaslist.php";
+
+// if the current user is logged in
+$auth = \hlin\Auth::instance
+	(
+		$whitelist, $blacklist, $aliaslist,
+		$user_id, $role
+	);
+</code></pre>
+
+<pre><code class="php">// ...
+
+// guest user
+$auth = \hlin\Auth::instance($whitelist, $blacklist, $aliaslist);</code></pre>
+
+<h4>creating protocols</h4>
+
+<p>To create protocols simply extend <code>hlin.Protocol</code> or use the
+<code>hlin.Check</code> helper.</p>
+
+<p>Here is a very simple example of the lists, note that only the whitelist
+is actually implicitly mandatory, so you can just pass empty arrays for the
+blacklist and aliaslist.</p>
+
+<h5>whitelist</h5>
+<pre><code class="php">&lt;?php namespace hlin; return array
+	(
+		// you can use the roles as keys
+		'admin' => array
+			(
+				Check::entities([ 'admin_area' ])->unrestricted(),
+			),
+		// the guest role is specified though a constant Guest
+		Auth::Guest => array
+			(
+				Check::entities([ 'login' ])->unrestricted(),
+			),
+
+		// or create tag roles (see aliaslist for usefulness)
+		'+members' => array
+			(
+				Check::entities([ 'access_site' ])->unrestricted(),
+			),
+
+	); # conf</code></pre>
+<h5>blacklist</h5>
+<pre><code class="php">&lt;?php namespace hlin; return array
+	(
+		// due to this rule guests can't "access_site" regardless of what
+		// the whitelist specifies; blacklists are absolute
+		Auth::Guest => array
+			(
+				Check::entities([ 'access_site' ])->unrestricted(),
+			),
+
+		// tag roles don't work here; blacklists don't invoke aliases, you must
+		// explicitly blacklist a role, inheriting from a role doesn't imply
+		// you inherit it's blacklist, only it's whitelisting
+
+	); # conf
+</code></pre>
+<h5>aliaslist</h5>
+<pre><code class="php">&lt;?php namespace hlin; return array
+	(
+		'member' => [ '+members' ],
+		'admin' => [ '+members' ],
+
+	); # conf</code></pre>
 <h3 id="doc-hlin-console">Using the Console</h3>
 
 <p>A simple console helper is provided by default. To create a basic
@@ -834,7 +941,7 @@ minimal example:</p>
 	$autoloader = autoloader($syspath);
 
 	if ($autoloader === null) {
-		die('Err: failed to initialize autoloader')
+		die('Err: failed to initialize autoloader');
 	}
 
 	require "$syspath/context.php";
@@ -1284,16 +1391,16 @@ this function to convert to PHP namespaces that can be invoked.</p>
 due to limitations in the language ("Array" is reserved). The class contains
 only static helpers.</p>
 
-<h4><code>Arr::implode</code></h4>
+<h4><code>Arr::join</code></h4>
 
-<p><code>Arr::implode($glue, array $list, callable $manipulator)</code> is used
+<p><code>Arr::join($glue, array $list, callable $manipulator)</code> is used
 as an advanced version of PHP standard <code>implode</code> that allows for
-manipulation of the value. The <code>Arr::implode</code> also has a convenient
+manipulation of the value. The <code>Arr::join</code> also has a convenient
 "if <code>false</code> the value from the list is ignored" so it works in both
 filtering and joinging at the same time.</p>
 
 <pre><code class="php">$list = [ 'x' => 10, 'y' => 20, 'z' => 30 ];
-$res = \hlin\Arr::implode(";\n", $list, function ($key, $val) {
+$res = \hlin\Arr::join(";\n", $list, function ($key, $val) {
 	if ($val == 20) return false;
 	return "$key -> $val";
 });</code></pre>
@@ -1385,15 +1492,376 @@ affect the result.</p>
 libraries) or in the abstract sense (explicit technologies, explicit use cases,
 non-portable techniques).</p>
 
+<h3 id="doc-fenrir-pdx">Paradox Migrations</h3>
+
+<p>Paradox is a migration systems that is designed to sync your database to
+your source. It's customizable, so you can tailor it to any kind of migrations
+with a little bit of work. By default it comes ready configured for sql/mysql
+and compatible databases migrations.</p>
+
+<p>The system is module-aware which is to say you can have per-module
+migrations, with inter module dependencies and it will handle them properly, or
+notify you if you created an impossible scenario.</p>
+
+<p>You can access the system from anywhere but in general you'll want to access
+it from the command line, all commands are fairly self explainatory, and by
+default will do a dry-run until you add the <code>!</code> flag.</p>
+
+<pre><code class="unix"># View databases known to system
+$ server/console pdx list
+
+# Show history of the demo.mysql database
+$ server/console pdx log demo.mysql
+
+# Dry-run for setup of demo.mysql for the first time
+$ server/console pdx init demo.mysql
+
+# Setup demo.mysql for the first time
+$ server/console pdx init demo.mysql !
+
+# Dry-run for deletion of demo.mysql
+$ server/console pdx rm demo.mysql
+
+# Delete demo.mysql as it's know by history
+$ server/console pdx rm demo.mysql !
+
+# Hard delete demo.mysql
+$ server/console pdx rm demo.mysql --hard !
+
+# Dry-run for syncing the demo.mysql database
+$ server/console pdx sync demo.mysql
+
+# Sync demo.mysql database
+$ server/console pdx sync demo.mysql !</code></pre>
+
+<p>Migrations are done though configuration files, most steps allow for both
+arrays (ie. configuration) as well as callbacks for if you need to perform more
+special handling.</p>
+
+<h4>freia/paradox</h4>
+<p>By default, and in particular if you're using the <code>pdx</code> console
+command, you place the configuration of your migration in
+<code>freia/paradox</code> (which you can create in any module), the first
+key specifies the "migrations module" (choose anything; we recomend grouping
+into one module as much as possible, easier to keep in sync), the second key
+specifies the version of the migration, and the value specifies the
+configuration that holds the migration logic.</p>
+<pre><code class="php">&lt;?php return array
+	(
+		'demo-main' => array
+			(
+				'1.0.0' => 'timeline/demo/install',
+			)
+
+	); # conf
+</code></pre>
+
+<h4>timeline/demo/install</h4>
+<p>Migrations have a lot of steps, you can customize, in general most
+migrations only use one or two (since you're usually either only creating, only
+updating, or only modifying structure, not everything at once).</p>
+<pre><code class="php">&lt;?php return array
+	(
+		'description'
+			=> 'Install for basic demo tables.',
+
+		'configure' => array
+			(
+				'tables' => array
+					(
+						'forums',
+						'threads',
+						'posts'
+					)
+			),
+
+		'create:tables' => array
+			(
+				'forums' =>
+					'
+						_id   [primaryKey],
+						title [title],
+
+						PRIMARY KEY (_id)
+					',
+				'threads' =>
+					'
+						_id   [primaryKey],
+						title [title],
+
+						PRIMARY KEY (_id)
+					',
+				'posts' =>
+					'
+						_id   [primaryKey],
+						body  [block],
+
+						PRIMARY KEY (_id)
+					',
+			),
+
+	); # config</code></pre>
+
+<p>Here's another migration:</p>
+
+<pre><code class="php">&lt;?php return array
+	(
+		'description'
+			=> 'Add forum and thread column.',
+
+		'modify:tables' => array
+			(
+				'threads' =>
+					'
+						ADD COLUMN `forum` [foreignKey] AFTER `_id`
+					',
+				'posts' =>
+					'
+						ADD COLUMN `thread` [foreignKey] AFTER `_id`
+					',
+			),
+
+	); # config</code></pre>
+
+<h4>interdependence</h4>
+<p>Need a migration that's dependent on some other modules? Specify the value
+for the version as an array, with the 2nd component in the array an array of
+modules and version they need to be at before this module can reach the
+version specified by the migration.</p>
+
+<pre><code class="php">&lt;?php return array
+	(
+		'demo-main' => array
+			(
+				'1.0.0' => 'timeline/demo/install',
+				'1.1.0' =>
+					[
+						'timeline/demo/1.1.0', [
+							'demo-access' => '1.0.0',
+							'some-other-module' => '2.1.4'
+						]
+					]
+			)
+
+	); # conf
+</code></pre>
+<h3 id="doc-fenrir-routing">Routing</h3>
+
+<p>Basic <code>HTTP</code> routing is performed though
+<code>HttpDispatcher</code>. The class works on the principle of matching rules,
+if a rule at any point matches all subsequent rules won't match.</p>
+
+<h4>Minimalistic example</h4>
+<pre><code class="php">$http = \fenrir\HttpDispatcher::instance($context);
+$routes = $context->confs->read('freia/routes');
+
+if ($http->matches('/api/.*')) {
+
+	$http->response()->logic(function ($response, $conf) {
+		return json_encode($response);
+	});
+
+	$http->any($routes['hello'], function ($req, $res) {
+		return ['say' => 'Hello'];
+	});
+
+	// 404
+	if ($http->nomatch()) {
+		$context->web->send(json_encode(['error' => 'no such api']), 404);
+	}
+}
+else { // web app
+
+	$http->response()->logic(function ($response, $conf) {
+		return render("webapp:$conf", $response);
+	});
+
+	// ...
+
+	// 404
+	if ($http->nomatch()) {
+		$context->web->send(render('public:404'), 404);
+	}
+}</code></pre>
 
 
 	<h3 id="fenrir-system-MysqlDatabase">
-		<code>fenrir.system.MysqlDatabase</code> class
+		<code>fenrir.system.MysqlDatabase</code>
 	</h3>
-		<h3 id="fenrir-tools-MakeCommand">
-		<code>fenrir.tools.MakeCommand</code> class
+	<p>Wrapper around <a href="http://php.net/manual/en/book.pdo.php">PDO</a>,
+alters defeaults and enhances system to be more fluent and easier to write by
+adding shorters methods, and a whole bunch of helpers (including mass
+assignment helpers).</p>
+
+<pre><code class="php">$entry = $db->prepare
+	(
+		'
+			SELECT entry.*
+			  FROM `[table]` entry
+			 WHERE entry_id = :id
+			 LIMIT 1
+		',
+		$this->constants()
+	)
+	->num(':id', $id)
+	->execute()
+	->fetch_entry();
+</code></pre>
+	<h3 id="fenrir-tools-MakeCommand">
+		<code>fenrir.tools.MakeCommand</code>
 	</h3>
-	
+	<p>Make command helps in creating classes. The command will try to figure out
+what you want to make and fill in the gaps, so you dont have to. You can
+explicitly teach it patterns though the <code>freia/make/class-patterns</code>
+configuration.</p>
+
+<pre><code class="unix"># Get available domains
+server/console make ?</code></pre>
+
+<pre><code class="unix"># Create class FooCommand (that implements \hlin\archetype\Command) with
+# namespace example; place it in the file /Command/Foo.php located in the
+# class path for the module specific to namespace example
+server/console make example.FooCommand</code></pre>
+
+<pre><code class="unix"># Same as above only we ensure that the problem example.FooCommand is
+# interpreted as a class
+server/console make class:example.FooCommand</code></pre>
+
+<h2 id="ran"><code>ran</code> Module</h2>
+
+<p>The <code>ran</code> module specialises in theme and view helpers; the
+module is seperated primarily to facilitate static analysis.</p>
+
+<h3 id="doc-ran-html-context">HTML Context</h3>
+
+<p>The HTML context is a very simple wrapper for automatically configuring more
+complex objects.</p>
+
+<pre><code class="php">$html = \ran\HTML::instance($context->confs);
+$form = $html->form('/example/action');</code></pre>
+<h3 id="doc-ran-forms">Forms</h3>
+
+<p>The ran module provides a object based form builder. You will need a HTML
+context to easily use them. The class is primarily oriented towards creating
+complex static pages, a lot of them. The form helpers allows you to simply
+declare the form and control all it's rendering, including hints, errors, and
+other goodies from configuration files. You can have multiple configurations
+in the same project and you can also customize fields on the spot.</p>
+
+<h4>minimalist example</h4>
+<pre><code class="php html">&lt;?= $f = $html->form('/example/action', 'your-configuration-name') ?&gt;
+&lt;?= $f->select('Stuff', 'people')->options_array(['A', 'B', 'C']) ?&gt;
+&lt;?= $f->text('Given Name', 'given_name') ?&gt;
+&lt;button type="submit" &lt;?= $f->mark() &gt;&gt;Send&lt;/button&gt;</code></pre>
+
+<p>The first above forces the form object to render; the form will
+automatically close, if you need to support IE8 you'll need to add a polyfill
+for the <code>form</code> attributes.</p>
+
+
+	<h3 id="ran-tools-Temp">
+		<code>ran.tools.Temp</code>
+	</h3>
+	<p><code>Temp</code> is used for easily creating placeholder content.</p>
+
+<pre><code class="html">&lt;?php namespace ran; ?&gt;
+
+&lt;div class=&quot;person&quot;&gt;
+	&lt;div class=&quot;person-Avatar&quot;&gt;
+		&lt;img src=&quot;&lt;?= Temp::img(100, 100) ?&gt;&quot;/&gt;
+	&lt;/div&gt;
+	&lt;div class=&quot;person-Meta&quot;&gt;
+		&lt;p&gt;name: &lt;?= Temp::name() ?&gt;&lt;/p&gt;
+		&lt;p&gt;signup: &lt;?= date('Y-m-d', Temp::time()) ?&gt;&lt;/p&gt;
+		&lt;p&gt;tel: &lt;?= Temp::telephone() ?&gt;&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<p>While you can use it like the above example the real magic of Temp is that
+when you call (almost all) the methods you get an instance that resolves to a
+random version of what you requested. Here is a simple example of
+the concept:</p>
+
+<pre><code class="php">$name = \ran\Temp::given_name();
+echo $name;
+echo $name;
+echo $name;
+echo $name;
+</code></pre>
+<p>The above may render to...</p>
+<pre><code class="text">Ana
+Bob
+Eve
+Henry</code></pre>
+<p>Of course what it renders to is random, your results may vary.</p>
+
+<p>Most methods of <code>Temp</code> are self explainatory: <code>name</code>,
+<code>given_name</code>, <code>family_name</code>, <code>word</code>,
+<code>words</code>, <code>paragraph</code>, <code>city</code>,
+<code>address</code>, <code>ssn</code>, <code>email</code>,
+<code>telephone</code>, <code>title</code>, <code>fullurl</code>,
+<code>counter</code>.</p>
+
+<p>You can use <code>copies</code> to generate arrays of random things. This
+method takes an array of data and creates an array of copies from it. In
+additin to that you can pass in a 3rd parameter that specifies which of the
+values in your original array are counters and it will increment or randomize
+based on what you specify.</p>
+
+<pre><code class="php">// create random number of copies of entry with random number for viewcount
+// and random number for comments, and incrementing value for id
+$entries = Temp::copies($entry, rand(-20, 10), [
+	'viewcount' => [0, 1000],
+	'comments' => [0, 1000],
+	'id' => 1,
+]);</code></pre>
+<p>When the count is lower then 0 it's interpreted as 0. The reason for
+negative values is so you can specify how often you want to get an
+empty state.</p>
+	<h3 id="ran-tools-HH">
+		<code>ran.tools.HH</code>
+	</h3>
+	<p><code>HH</code> stands for <code>HTMLHeader</code> and maintains utilities
+for programatically managing html header levels. The purpose is to get
+perfect header levels.</p>
+
+<pre><code class="php">HH::next(); # => 'h1'
+HH::next(); # => 'h2'
+
+HH::raise('h2'); # => 'h3'
+HH::raise('h6'); # => 'h6'</code></pre>
+
+<p>You should always store your header units in variables and use them later;
+ using the functions directly isn't practical.</p>
+
+<pre><code class="php">$h1 = HH::next();
+$h2 = HH::next();
+// ...
+&lt;?= "&lt;$h2&gt;My Title&lt;/$h2&gt;" ?&gt;
+</code></pre>
+
+<p>Note that <code>$h1</code> isn't necesarily <code>'h1'</code> and
+<code>$h2</code> isn't necesarily <code>'h2'</code>. If the piece of code in
+the example was in a partial view the headers could resolve to <code>h3</code>
+and <code>h4</code>.</p>
+
+<p>It is recomended you pass the last header to partials; by convention
+<code>$h</code> in the following:</p>
+
+<pre><code class="php">HH::base($h)
+$h1 = HH::next();
+$h2 = HH::next();
+</code></pre>
+
+<p>The following is equivalent to the above.</p>
+
+<pre><code class="php">$h1 = HH::raise($h);
+$h2 = HH::raise($h1);</code></pre>
+
+<p>If you ever need to reset to <code>h1</code>, simply call
+<code>HH::base(null)</code>, or you can just hard code it by doing
+<code>$h1 = 'h1'</code> and move from there.</p>
+
 <h2 id="doc-changelog">Major Changes</h2>
 
 <p><i>Nothing in this section at the moment. Check back later.</i></p>
@@ -1436,6 +1904,7 @@ non-portable techniques).</p>
 		<li><a class="toc-Entry" href="#doc-hlin-interfaces">Interfaces</a></li>
 		<li><a class="toc-Entry" href="#doc-hlin-contexts">Using Contexts</a></li>
 		<li><a class="toc-Entry" href="#doc-hlin-errors">Exceptions &amp; Errors</a></li>
+		<li><a class="toc-Entry" href="#doc-hlin-protocols">Authorizer &amp; Protocols</a></li>
 		<li>
 			<a class="toc-Entry" href="#doc-hlin-console">Using the Console</a>
 			<ul>
@@ -1496,9 +1965,19 @@ non-portable techniques).</p>
 	</ul>
 	<p></p>
 	<ul>
-		<li><a class="toc-Entry" href="#doc-fenrir-MakeCommand">MakeCommand</a></li>
+		<li><a class="toc-Entry" href="#fenrir-tools-MakeCommand">MakeCommand</a></li>
 	</ul>
 
+	<div class="toc-Title"><a href="#ran">ran Module</a></div>
+	<ol>
+		<li><a class="toc-Entry" href="#doc-ran-html-context">HTML Context</a></li>
+		<li><a class="toc-Entry" href="#doc-ran-forms">Forms</a></li>
+	</ol>
+	<p class="toc-Subtitle">tools</p>
+	<ul>
+		<li><a class="toc-Entry" href="#ran-tools-Temp">Temp</a></li>
+		<li><a class="toc-Entry" href="#ran-tools-HH">HH</a></li>
+	</ul>
 	<div class="toc-Title"><a href="#doc-changelog">Major Changes</a></div>
 			</div>
 		</div>
