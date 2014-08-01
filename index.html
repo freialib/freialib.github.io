@@ -62,13 +62,16 @@ send tweets on <a href="https://twitter.com/">twitter</a> using the hashtag
 <br/><small>See <a href="#doc-license">License</a> section for more
 information.</small></p>
 
-<p><i><b>The freia library is currently still in early development</b>,
-everything that goes in it is planned and a lot of it's code is consolidation
-and of tooling of code the authors have already written. Things are still being
-documented, tests written/moved/etc. The prototype version (v0.0.0) is
-available if you wish to take a look at it. Code will be split up into
-independent modules; for easy refactoring the code is currently in a single
-repo at this stage in development.</i></p>
+<p><i><b>The freia library is currently still in early development</b>.
+Version v0.1 is available if you wish to take a look at it; it's
+production usable, just need to know what you're doing. The major parts
+of the code is based on tools that have been used in production.</i></p>
+
+<p><i>Documentation is complete at this time. Version 1.0 won't have
+any re-design changes, just test coverage, test tools, etc; design changes
+required by tests will happen if absolutely necesary. Documentation that refers
+to "dev-master" as dependencies will be switched to "1.0" and stability
+"stable" with the advent of v1.0</i></p>
 
 <h2 id="doc-using">Installing</h2>
 
@@ -98,36 +101,64 @@ dependencies into your revision control system.</p>
 <pre><code class="json">{
 	"autoload": {
 		"freia": {
-			"load": [ "system", "linker", "vendor" ]
+			"load": [ "vendor" ]
 		}
 	},
+
+	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.10",
-		"freia": "~1.0",
-		"hlin/archetype": "~1.0",
-		"hlin/attribute": "~1.0",
-		"hlin/tools": "~1.0"
+		"freia/autoloader": "dev-master",
+		"hlin/archetype": "dev-master",
+		"hlin/attribute": "dev-master",
+		"hlin/tools": "dev-master"
 	}
 }</code></pre>
 
-<h4>All modules</h4>
+<p>Add paths to <code>load</code> (ie. your own paths) to have them recognized
+by freia's autoloader.</p>
+
+<h4>Raw Autoloader</h4>
+
+<p>All out coding hermit mode,</p>
 
 <pre><code class="json">{
 	"autoload": {
 		"freia": {
-			"load": [ "system", "linker", "vendor" ]
+			"load": [ "vendor" ]
 		}
 	},
+
+	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.10",
-		"freia": "~1.0",
-		"hlin/archetype": "~1.0",
-		"hlin/attribute": "~1.0",
-		"hlin/tools": "~1.0",
-		"fenrir/system": "~1.0",
-		"fenrir/tools": "~1.0"
+		"freia/autoloader": "dev-master"
 	}
 }</code></pre>
+
+<h4>Don't care for filtering though modules?</h4>
+
+<p>The bundle module is completely empty and won't get picked up by freia's
+autoloader, it just requires all the official modules in the freia library.</p>
+
+
+<p>For a list of bundled in modules please refer to the
+<a href="https://github.com/freialib/freialib-bundle/blob/master/composer.json">freialib-bundle/composer.json</a></p>
+
+
+<pre><code class="json">{
+	"autoload": {
+		"freia": {
+			"load": [ "vendor" ]
+		}
+	},
+
+	"minimum-stability": "dev",
+	"require": {
+		"freialib/bundle": "dev-master"
+	}
+}</code></pre>
+
+<p>As before add paths to <code>load</code> (ie. your own paths) to have them
+recognized by freia's autoloader.</p>
 
 <h4>Basic framework for getting started</h4>
 
@@ -137,16 +168,16 @@ structure from scratch to get the most benefit by avoiding any unncesary
 clutter that a generic structure might impose, but if you're in a hurry or need
 a reference point here you go:</p>
 
-<pre><code class="vdr / no-highlight">composer create-project --prefer-dist freialib/framework YOUR_PROJECT/ "~1.0"
-cd YOUR_PROJECT/1.0
+<pre><code class="vdr / no-highlight">git clone --depth=1 https://github.com/freialib/framework YOUR_PROJECT/
+cd YOUR_PROJECT/
+rm -rf .git
+cd 1.x/
 git init
 git add -A
-git commit -m "base"</code></pre>
-
-<p>If you don't have the composer command run the following to get it:</p>
-
-<pre><code class="vdr / no-highlight">curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer</code></pre>
+git commit -m "1.0"</code></pre>
+<p><small>Above <code>1.0</code> and <code>1.x</code> refer to your own project; not freia.</small></p>
+<p>If you don't have the <code>git</code> please go to
+<a href="http://git-scm.com/">http://git-scm.com/</a>, it's a great tool <i class="icon-emo-wink2"></i></p>
 
 <h2 id="doc-license">License</h2>
 
@@ -594,7 +625,7 @@ freia only requires <code>src</code> and <code>confs</code>; anything else
 is considered specialized functionality (this includes tests). Here is a module
 example:</p>
 
-<pre><code class="no-highlight">your_module/
+<pre><code class="vdr / no-highlight">your_module/
 	confs/
 	src/
 	composer.json
@@ -1876,7 +1907,7 @@ $h2 = HH::raise($h1);</code></pre>
 		<div class="window-Navbody">
 			<div class="keyinfo">
 				<span class="keyinfo-Lead">
-					<i class="icon-download"></i> <a href="https://github.com/freialib/framework/archive/draft.zip">Get Freia</a> <span class="keyinfo-Version">v0.0.0</span>
+					<i class="icon-download"></i> <a href="https://github.com/freialib/framework/archive/draft.zip">Get Freia</a> <span class="keyinfo-Version">v0.1</span>
 				</span>
 				<ul>
 					<li><i class="icon-hammer"></i> <a href="/license.txt">BSD 2-clause License</a></li>
