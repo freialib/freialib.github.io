@@ -937,49 +937,46 @@ is actually implicitly mandatory, so you can just pass empty arrays for the
 blacklist and aliaslist.</p>
 
 <h5>whitelist</h5>
-<pre><code class="php">&lt;?php namespace hlin; return array
-	(
-		// you can use the roles as keys
-		'admin' => array
-			(
-				Check::entities([ 'admin_area' ])->unrestricted(),
-			),
-		// the guest role is specified though a constant Guest
-		Auth::Guest => array
-			(
-				Check::entities([ 'login' ])->unrestricted(),
-			),
+<pre><code class="php">&lt;?php namespace hlin; return [
 
-		// or create tag roles (see aliaslist for usefulness)
-		'+members' => array
-			(
-				Check::entities([ 'access_site' ])->unrestricted(),
-			),
+	// you can use the roles as keys
+	'admin' => [
+		Check::entities([ 'admin_area' ])->unrestricted(),
+	],
 
-	); # conf</code></pre>
+	// the guest role is specified though a constant Guest
+	Auth::Guest => [
+		Check::entities([ 'login' ])->unrestricted(),
+	],
+
+	// or create tag roles (see aliaslist for usefulness)
+	'+members' => [
+		Check::entities([ 'access_site' ])->unrestricted(),
+	],
+
+]; # conf</code></pre>
 <h5>blacklist</h5>
-<pre><code class="php">&lt;?php namespace hlin; return array
-	(
-		// due to this rule guests can't "access_site" regardless of what
-		// the whitelist specifies; blacklists are absolute
-		Auth::Guest => array
-			(
-				Check::entities([ 'access_site' ])->unrestricted(),
-			),
+<pre><code class="php">&lt;?php namespace hlin; return [
 
-		// tag roles don't work here; blacklists don't invoke aliases, you must
-		// explicitly blacklist a role, inheriting from a role doesn't imply
-		// you inherit it's blacklist, only it's whitelisting
+	// due to this rule guests can't "access_site" regardless of what
+	// the whitelist specifies; blacklists are absolute
+	Auth::Guest => [
+		Check::entities([ 'access_site' ])->unrestricted(),
+	],
 
-	); # conf
+	// tag roles don't work here; blacklists don't invoke aliases, you must
+	// explicitly blacklist a role, inheriting from a role doesn't imply
+	// you inherit it's blacklist, only it's whitelisting
+
+]; # conf
 </code></pre>
 <h5>aliaslist</h5>
-<pre><code class="php">&lt;?php namespace hlin; return array
-	(
-		'member' => [ '+members' ],
-		'admin' => [ '+members' ],
+<pre><code class="php">&lt;?php namespace hlin; return [
 
-	); # conf</code></pre>
+	'member' => [ '+members' ],
+	'admin' => [ '+members' ],
+
+]; # conf</code></pre>
 <h3 id="doc-hlin-console">Using the Console</h3>
 
 <p>A simple console helper is provided by default. To create a basic
@@ -1011,7 +1008,7 @@ minimal example:</p>
 
 <p>Invoking from the command line is fairly simple.</p>
 
-<pre><code class="unix">$ cd path/to/console
+<pre><code class="bash">$ cd path/to/console
 # simple invokation
 $ ./console
 # you can also just invoke from outside (we'll assume parent is server/)
@@ -1062,61 +1059,57 @@ of your choice; you may create a file if the module doesn't have it.</p>
 
 <h5>verbose &amp; complete command configuration</h5>
 
-<pre><code class="php">&lt;?php return array
-	(
-		'make' => array
-			(
-				'topic' => 'fenrir.tools',
-				'command' => 'fenrir.MakeCommand',
-				'flagparser' => 'hlin.NoopFlagparser',
-				'summary' => 'make a class, or just about anything else',
-				'desc' =>
-					"The make command will try to figure out what you want to make and create it as apropriatly as possible. ".
-					"What you pass to it is considered the 'problem' and is what the command is trying to solve. A solution will be presented before executing it.\n\n".
-					"If it's a class it will try to place it in the right namespace, under the right directory structure and have it implement the right interfaces.\n\n".
-					"You can skip the guessing by providing a domain to the problem using the domain:problem syntax. Please see examples for details. ".
-					"Some patterns may always require the domain to work.",
-				'examples' => array
-					(
-						'?' => "Get available domains",
-						'example.FooCommand' => "Create class FooCommand (that implements \hlin\archetype\Command) with namespace example; place it in the file /Command/Foo.php located in the class path for the module specific to namespace example",
-						'class:example.FooCommand' => 'Same as above only we ensure that the problem example.FooCommand is interpreted as a class'
-					),
-				'help' =>
-					" :invokation ?\n\n".
-					"    Get all supported problem domains.\n\n".
-					" :invokation [&lt;domain&gt;:]&lt;problem&gt;\n\n".
-					"    Solve the given problem. Domain is optional.\n".
-					"    If domain is not provided the command will try to guess."
-			),
+<pre><code class="php">&lt;?php return [
 
-	); # conf</code></pre>
+	'make' => [
+		'topic' => 'fenrir.tools',
+		'command' => 'fenrir.MakeCommand',
+		'flagparser' => 'hlin.NoopFlagparser',
+		'summary' => 'make a class, or just about anything else',
+		'desc' =>
+			"The make command will try to figure out what you want to make and create it as apropriatly as possible. ".
+			"What you pass to it is considered the 'problem' and is what the command is trying to solve. A solution will be presented before executing it.\n\n".
+			"If it's a class it will try to place it in the right namespace, under the right directory structure and have it implement the right interfaces.\n\n".
+			"You can skip the guessing by providing a domain to the problem using the domain:problem syntax. Please see examples for details. ".
+			"Some patterns may always require the domain to work.",
+		'examples' => [
+			'?' => "Get available domains",
+			'example.FooCommand' => "Create class FooCommand (that implements \hlin\archetype\Command) with namespace example; place it in the file /Command/Foo.php located in the class path for the module specific to namespace example",
+			'class:example.FooCommand' => 'Same as above only we ensure that the problem example.FooCommand is interpreted as a class'
+		],
+		'help' =>
+			" :invokation ?\n\n".
+			"    Get all supported problem domains.\n\n".
+			" :invokation [&lt;domain&gt;:]&lt;problem&gt;\n\n".
+			"    Solve the given problem. Domain is optional.\n".
+			"    If domain is not provided the command will try to guess."
+	],
+
+]; # conf</code></pre>
 
 <h5>minimalistic command configuration aka. lazy</h5>
 
-<pre><code class="php">&lt;?php return array
-	(
-		'make' => array
-			(
-				'topic' => 'fenrir.tools',
-				'command' => 'fenrir.MakeCommand',
-				'summary' => 'make a class, or just about anything else',
-				'examples' => array
-					(
-						'?' => "Get available domains",
-						'example.FooCommand' => "Create class FooCommand (that implements \hlin\archetype\Command) with namespace example; place it in the file /Command/Foo.php located in the class path for the module specific to namespace example",
-						'class:example.FooCommand' => 'Same as above only we ensure that the problem example.FooCommand is interpreted as a class'
-					),
-			),
+<pre><code class="php">&lt;?php return [
 
-	); # conf</code></pre>
+	'make' => [
+		'topic' => 'fenrir.tools',
+		'command' => 'fenrir.MakeCommand',
+		'summary' => 'make a class, or just about anything else',
+		'examples' => [
+			'?' => "Get available domains",
+			'example.FooCommand' => "Create class FooCommand (that implements \hlin\archetype\Command) with namespace example; place it in the file /Command/Foo.php located in the class path for the module specific to namespace example",
+			'class:example.FooCommand' => 'Same as above only we ensure that the problem example.FooCommand is interpreted as a class'
+		],
+	],
+
+]; # conf</code></pre>
 <h4 id="doc-hlin-help-commands">Help Commands</h4>
 
 <p>Help commands are fairly straight forward. We'll assume
 <code>./console</code> is your console script, to get general help you just
 invoke:
 
-<pre><code class="unix">$ ./console help
+<pre><code class="bash">$ ./console help
 # or just...
 $ ./console
 # or...
@@ -1127,7 +1120,7 @@ $ ./console --help
 category are refered to as "application commands" and have "application" as
 the category.</p>
 
-<pre><code class="unix"># all commands
+<pre><code class="bash"># all commands
 $ ./console help
 # only application commands
 $ ./console help application
@@ -1136,7 +1129,7 @@ $ ./console help fenrir.tools</code></pre>
 
 <p>To get help on a command simply use the <code>?</code> command:</p>
 
-<pre><code class="unix">$ ./console ? help
+<pre><code class="bash">$ ./console ? help
 $ ./console ? pdx
 $ ./console ? make</code></pre>
 <h4 id="doc-hlin-honeypot">Honeypot Command</h4>
@@ -1146,7 +1139,7 @@ IDEs can use to "get the correct idea" of what extends what. This both helps
 in providing accurate autocomplete information as well as avoiding annoying
 "this class must be declared abstract" false positives.</p>
 
-<pre><code class="unix"># regenerate all honeypots
+<pre><code class="bash"># regenerate all honeypots
 $ ./console honeypot</code></pre>
 
 <p>Some IDEs (notably netbeans) are slow to process. You may need to both
@@ -1604,82 +1597,90 @@ key specifies the "migrations module" (choose anything; we recomend grouping
 into one module as much as possible, easier to keep in sync), the second key
 specifies the version of the migration, and the value specifies the
 configuration that holds the migration logic.</p>
-<pre><code class="php">&lt;?php return array
-	(
-		'demo-main' => array
-			(
-				'1.0.0' => 'timeline/demo/install',
-			)
+<pre><code class="php">&lt;?php return [
 
-	); # conf
+	'example-main' => [
+		'1.0.0' => 'timeline/example/install',
+	]
+
+]; # conf
 </code></pre>
 
-<h4>timeline/demo/install</h4>
+<h4>timeline/example/install</h4>
 <p>Migrations have a lot of steps, you can customize, in general most
 migrations only use one or two (since you're usually either only creating, only
 updating, or only modifying structure, not everything at once).</p>
-<pre><code class="php">&lt;?php return array
-	(
-		'description'
-			=> 'Install for basic demo tables.',
+<pre><code class="php">&lt;?php return [
 
-		'configure' => array
-			(
-				'tables' => array
-					(
-						'forums',
-						'threads',
-						'posts'
-					)
-			),
+	'description'
+		=> 'Install for basic example tables.',
 
-		'create:tables' => array
-			(
-				'forums' =>
-					'
-						_id   [primaryKey],
-						title [title],
+	'configure' => [
+		'tables' => [
+			'forums',
+			'threads',
+			'posts'
+		]
+	],
 
-						PRIMARY KEY (_id)
-					',
-				'threads' =>
-					'
-						_id   [primaryKey],
-						title [title],
+	'create:tables' => [
+		'forums' =>
+			'
+				_id   [primaryKey],
+				title [title],
 
-						PRIMARY KEY (_id)
-					',
-				'posts' =>
-					'
-						_id   [primaryKey],
-						body  [block],
+				PRIMARY KEY (_id)
+			',
+		'threads' =>
+			'
+				_id   [primaryKey],
+				forum [foreignKey],
+				title [title],
 
-						PRIMARY KEY (_id)
-					',
-			),
+				PRIMARY KEY (_id)
+			',
+		'posts' =>
+			'
+				_id    [primaryKey],
+				body   [block],
 
-	); # config</code></pre>
+				PRIMARY KEY (_id)
+			',
+	],
+
+	'bindings' => [
+		'threads' => [
+			//           table     onDelete   onUpdate   idKey
+			//           --------  ---------  ---------  -----
+			'forum' => [ 'forums', 'CASCADE', 'CASCADE', '_id' ],
+
+			// specifying the id is optional, will default to _id
+		]
+	]
+
+]; # conf</code></pre>
 
 <p>Here's another migration:</p>
 
-<pre><code class="php">&lt;?php return array
-	(
-		'description'
-			=> 'Add forum and thread column.',
+<pre><code class="php">&lt;?php return [
 
-		'modify:tables' => array
-			(
-				'threads' =>
-					'
-						ADD COLUMN `forum` [foreignKey] AFTER `_id`
-					',
-				'posts' =>
-					'
-						ADD COLUMN `thread` [foreignKey] AFTER `_id`
-					',
-			),
+	'description'
+		=> 'Add thread column.',
 
-	); # config</code></pre>
+	'modify:tables' => [
+		'posts' =>
+			'
+				ADD COLUMN `thread` [foreignKey] AFTER `_id`
+			',
+	],
+
+	'bindings' => [
+		'posts' => [
+			'thread' => [ 'threads', 'CASCADE', 'CASCADE' ],
+		]
+	]
+
+]; # conf</code></pre>
 
 <h4>interdependence</h4>
 <p>Need a migration that's dependent on some other modules? Specify the value
@@ -1687,21 +1688,20 @@ for the version as an array, with the 2nd component in the array an array of
 modules and version they need to be at before this module can reach the
 version specified by the migration.</p>
 
-<pre><code class="php">&lt;?php return array
-	(
-		'demo-main' => array
-			(
-				'1.0.0' => 'timeline/demo/install',
-				'1.1.0' =>
-					[
-						'timeline/demo/1.1.0', [
-							'demo-access' => '1.0.0',
-							'some-other-module' => '2.1.4'
-						]
-					]
-			)
+<pre><code class="php">&lt;?php return [
 
-	); # conf
+	'example-main' => [
+
+		'1.0.0' => 'timeline/example/install',
+		'1.1.0' => [
+			'timeline/example/1.1.0', [
+				'example-access' => '1.0.0',
+				'some-other-module' => '2.1.4'
+			]
+		]
+	]
+
+]; # conf
 </code></pre>
 <h3 id="doc-fenrir-routing">Routing</h3>
 
@@ -1773,15 +1773,15 @@ what you want to make and fill in the gaps, so you dont have to. You can
 explicitly teach it patterns though the <code>freia/make/class-patterns</code>
 configuration.</p>
 
-<pre><code class="unix"># Get available domains
+<pre><code class="bash"># Get available domains
 server/console make ?</code></pre>
 
-<pre><code class="unix"># Create class FooCommand (that implements \hlin\archetype\Command) with
+<pre><code class="bash"># Create class FooCommand (that implements \hlin\archetype\Command) with
 # namespace example; place it in the file /Command/Foo.php located in the
 # class path for the module specific to namespace example
 server/console make example.FooCommand</code></pre>
 
-<pre><code class="unix"># Same as above only we ensure that the problem example.FooCommand is
+<pre><code class="bash"># Same as above only we ensure that the problem example.FooCommand is
 # interpreted as a class
 server/console make class:example.FooCommand</code></pre>
 
