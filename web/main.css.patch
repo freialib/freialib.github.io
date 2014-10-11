@@ -2,13 +2,11 @@ Index: staging/web/main.css
 ===================================================================
 --- staging/web/main.css
 +++ staging/web/main.css
-@@ -151,6 +151,6 @@
- 
+@@ -152,5 +152,5 @@
  .coffeescript .javascript, .javascript .xml, .lasso .markup, .tex .hljs-formula, .xml .javascript, .xml .vbscript, .xml .css, .xml .hljs-cdata {
    opacity: .5;
  }
-+
+ 
 +/*# sourceMappingURL=main.css.map */
 \ No newline at end of file
--
 -/*# sourceMappingURL=main.css.map */
