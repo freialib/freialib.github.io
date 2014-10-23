@@ -666,6 +666,45 @@ example:</p>
 	composer.json
 </code></pre>
 
+<p>Ocassionally you'll need to have modules that are loaded in a specific order,
+or follow certain rules, on such module type are debug modules. Debug modules
+are only loaded if in debug mode, otherwise they are ignored. To specify a
+debug module specify it in the freia rules section:</p>
+
+<pre><code class="json">{
+	"name": "yournamespace/subnamespace",
+	"type": "freia-module",
+	"extra": {
+		"freia": {
+			"rules": {
+				"identity": [ "debug" ],
+			}
+		}
+	},
+}</code></pre>
+
+<p>If you just need to specify a module should precede another module use
+the matches-before rule:</p>
+
+<pre><code class="json">{
+	"name": "yournamespace/subnamespace",
+	"type": "freia-module",
+	"extra": {
+		"freia": {
+			"matches-before": [
+				"hlin.security",
+				"hlin.archetype",
+				"hlin.attribute",
+				"hlin.tools"
+			]
+		}
+	},
+}</code></pre>
+
+<p>As in the example you can specify multiple other modules.</p>
+
+<p>You may also use both the debug module identity and the matches-before rule
+simultaniously on a single module.</p>
 <h2 id="hlin"><code>hlin</code> Module</h2>
 
 <p>The <code>hlin</code> module specialises in portable and completely testable
@@ -1773,7 +1812,131 @@ assignment helpers).</p>
 	->execute()
 	->fetch_entry();
 </code></pre>
-	<h3 id="fenrir-tools-MakeCommand">
+	<h3 id="fenrir-system-MysqlRepoTrait">
+		<code>fenrir.system.MysqlRepoTrait</code>
+	</h3>
+	<p>Provides basic, easily enhanced, functionality for creating a Repository,
+ie. a data abstraction layer based on mysql or compatible SQL database.</p>
+
+<p>The trait provides the following public methods:</p>
+
+<ul>
+	<li><code>find(array $logic = null) => array(\hlin\archetype\Model)</code></li>
+	<li><code>entry($entry_id) => \hlin\archetype\Model</code></li>
+	<li><code>store(\hlin\archetype\Model $model) => \hlin\archetype\Model</code></li>
+</ul>
+
+<p>All methods expect models and return models. Where model, in the Repository
+pattern is meant to be just a wrapper around data with only basic business
+logic and validation, no data binding, no persistance layer knowledge.</p>
+
+<p>Here is a very minimalistic Repo class.</p>
+
+<pre><code class="php">&lt;?php namespace example\linker;
+
+/**
+ * ...
+ */
+class TodoRepo implements \hlin\archetype\Repo {
+
+	use \fenrir\MysqlRepoTrait;
+
+	/**
+	 * @return array
+	 */
+	function constants() {
+		return [
+			'model' => 'example.Todo',
+			'table' => 'todos'
+		];
+	}
+
+	/**
+	 * @return static
+	 */
+	static function instance(\fenrir\MysqlDatabase $db) {
+		$i = new static;
+		$i->db = $db;
+		return $i;
+	}
+
+} # class
+</code></pre>
+
+<h4><code>find</code> Method</h4>
+
+<p>Find works similar to the mongodb data access api and always returns an
+array of models. The models are specified by constraints on the Repo class.</p>
+
+<p>Here are a few self explaintory examples:</p>
+
+<pre><code class="php"># retrieve all entries
+$all_entries = $repo->find();
+
+# retrieve 10 entries
+$entries = $repo->find([ '%limit' => 10 ]);
+
+# retrieve 10 entries of status "active"
+$entries = $repo->find([
+	'status' => 'active',
+	'%limit' => 10
+]);
+
+# retrieve 10 entries, starting after then 5th
+$entries = $repo->find([
+	'%limit' => 10,
+	'%offset' => 5
+]);
+
+# all entries, but only _id and title
+$entries = $repo->find([
+	'%fields' => [ '_id', 'title' ]
+]);
+
+# all entries, order by title
+$entries = $repo->find([
+	'%order_by' => [ 'title' => 'asc' ]
+]);
+
+# all entries, some complex constraints
+$entries = $repo->find([
+	'title' => [ 'like' => '%Cat' ],
+	'type1' => [ '&lt;=' => 1,  '&gt;' => -6],
+	'type2' => 'active',
+	'type3' => null,
+	'type4' => [ '!=' => null ],
+	'type5' => [ 'between' => ['2014-01-01', '2015-01-01'] ],
+	'type6' => [ 'in' => [2, 4, 6, 8] ]
+]);
+</code></pre>
+
+<h4><code>entry</code> Method</h4>
+
+<p>Retrieves a entry or returns <code>null</code>.</p>
+
+<pre><code class="php"># retrieve an entry
+$entryModel = $repo->entry($entry_id);
+</code></pre>
+
+<p>Use find to retrieve based on criteria.</p>
+
+<h4><code>store</code> Method</h4>
+
+<p>Persists an entry, returns a new entry corresponding to the persisted one,
+since the model provided in might not have full data (commonly missing id).</p>
+
+<pre><code class="php"># persist entry in the repository
+$persistedCat = $catRepo->store($catModel);
+</code></pre>
+
+<h4>Overwriting</h4>
+
+<p>The class provides a bunch of protected methods that reflect intermediary
+steps feel free to use them to hook in functionality such as joining tables.
+We won't go over them here due to any use of these method requiring internal
+knowledge, but if you need to add JOINs for example you would overwrite the
+<code>sqlselect</code> method, if you need to add more constraint options
+you would overwrite <code>parseconstraints</code>, etc</p>	<h3 id="fenrir-tools-MakeCommand">
 		<code>fenrir.tools.MakeCommand</code>
 	</h3>
 	<p>Make command helps in creating classes. The command will try to figure out
@@ -1793,6 +1956,41 @@ server/console make example.FooCommand</code></pre>
 # interpreted as a class
 server/console make class:example.FooCommand</code></pre>
 
+<p>To create a new pattern add the following to a
+<code>freia/make/class-patterns</code> configuration file:</p>
+
+<pre><code class="php">&lt;?php return [
+
+	'Cat' => [
+		'aliases' => [
+			'catkind.SmartAnimal' => 'Animal'
+		],
+		'extends' => 'Animal',
+		'implements' => [ 'catkind.Overlord' ],
+		'use' => [ 'hlin.CommandTrait' ],
+		'placeholder' =>
+			"\t/**\n\t * @return int\n\t */\n".
+			"\tfunction main(array \$args = null) {\n".
+			"\t\t// TODO implement\n".
+			"\t}"
+	],
+
+];</code></pre>
+
+<p>The key there specifies the matching pattern. In our case any class ending
+with dog. So it will match when we try to create <code>something.FunnyCat</code>
+or <code>example.something.InternetCat</code>, etc.</p>
+
+<p>In the example, aliases are converted to use statements. So in our case we
+are using an alias for the extends part, just to make the prezentation nicer.
+There is no real difference between the way it's done in the example and simply
+using <code>catkind.SmartAnimal</code> for the <code>extends</code> block and
+ignoring the <code>aliases</code> block altogheter.</p>
+
+<p>Traits are specified via the <code>use</code> block.</p>
+
+<p>To specify PHP native or global classes you have to use the
+<code>.TheClass</code> syntax, eg. <code>.Exception</code>
 <h2 id="ran"><code>ran</code> Module</h2>
 
 <p>The <code>ran</code> module specialises in theme and view helpers; the
@@ -2028,6 +2226,7 @@ $h2 = HH::raise($h1);</code></pre>
 	<p class="toc-Subtitle">system</p>
 	<ul>
 		<li><a class="toc-Entry" href="#fenrir-system-MysqlDatabase">MysqlDatabase</a></li>
+		<li><a class="toc-Entry" href="#fenrir-system-MysqlRepoTrait">MysqlRepoTrait</a></li>
 	</ul>
 	<p></p>
 	<ul>
